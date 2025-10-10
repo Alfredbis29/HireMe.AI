@@ -163,7 +163,7 @@ export default function Home() {
             <span className="text-xl font-bold">HireMe.AI</span>
           </div>
           <p className="text-center text-gray-400">
-            © 2024 HireMe.AI. All rights reserved.
+            © 2025 HireMe.AI. All rights reserved.
           </p>
         </div>
       </footer>

@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // appDir is now default in Next.js 14, no need to specify
-  },
-  // API configuration moved to individual route handlers
+  // Clean configuration for Next.js 14
 }
 
 module.exports = nextConfig
