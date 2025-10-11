@@ -1,9 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
 
 interface ResumeAnalysisResponse {
   overallScore: number
@@ -39,19 +34,33 @@ interface ResumeAnalysisResponse {
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData()
-    const file = formData.get('file') as File
+    console.log('📤 Upload API called')
+    
+    // Check content type
+    const contentType = request.headers.get('content-type') || ''
+    console.log('Content-Type:', contentType)
+    
+    let file: File | null = null
+    
+    if (contentType.includes('multipart/form-data')) {
+      // Handle file upload
+      const formData = await request.formData()
+      file = formData.get('file') as File
+      console.log('File received:', file?.name, file?.size)
+    } else {
+      // Handle other requests (for testing)
+      console.log('Non-form data request, using mock data')
+    }
 
-    if (!file) {
+    if (!file && contentType.includes('multipart/form-data')) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
     }
 
-    // For demo purposes, we'll return mock data
-    // In a real implementation, you would:
-    // 1. Extract text from the uploaded file (PDF/Word)
-    // 2. Send the text to OpenAI for analysis
-    // 3. Return the structured analysis
+    // Simulate processing time
+    console.log('🔄 Processing resume analysis...')
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
+    // Generate mock analysis data
     const mockAnalysis: ResumeAnalysisResponse = {
       overallScore: Math.floor(Math.random() * 30) + 70, // 70-100
       strengths: [
@@ -73,7 +82,7 @@ export async function POST(request: NextRequest) {
       ],
       skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
       experience: {
-        years: 3,
+        years: Math.floor(Math.random() * 5) + 2,
         level: 'mid',
         summary: 'Software development experience with web technologies'
       },
@@ -120,68 +129,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
+    console.log('✅ Analysis complete, returning results')
     return NextResponse.json(mockAnalysis)
+    
   } catch (error) {
-    console.error('Error analyzing resume:', error)
+    console.error('❌ Error analyzing resume:', error)
     return NextResponse.json(
-      { error: 'Failed to analyze resume' },
+      { 
+        error: 'Failed to analyze resume',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }
 }
-
-// Real implementation would look like this:
-/*
-export async function POST(request: NextRequest) {
-  try {
-    const formData = await request.formData()
-    const file = formData.get('file') as File
-
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
-    }
-
-    // Extract text from file (you'd need a library like pdf-parse for PDFs)
-    const fileBuffer = await file.arrayBuffer()
-    const text = await extractTextFromFile(fileBuffer, file.type)
-
-    // Analyze with OpenAI
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert resume analyzer. Analyze the following resume and provide:
-          1. Overall score (0-100)
-          2. Strengths (array of strings)
-          3. Weaknesses (array of strings)
-          4. Recommendations (array of strings)
-          5. Job matches (array of objects with title, company, matchScore, description)
-          6. Skills detected (array of strings)
-          7. Experience summary (string)
-          8. Education summary (string)
-          
-          Return the response as a JSON object.`
-        },
-        {
-          role: "user",
-          content: text
-        }
-      ],
-      temperature: 0.3,
-    })
-
-    const analysis = JSON.parse(completion.choices[0].message.content || '{}')
-    return NextResponse.json(analysis)
-  } catch (error) {
-    console.error('Error analyzing resume:', error)
-    return NextResponse.json(
-      { error: 'Failed to analyze resume' },
-      { status: 500 }
-    )
-  }
-}
-*/
