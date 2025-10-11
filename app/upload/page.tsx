@@ -74,7 +74,7 @@ export default function UploadPage() {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await fetch('/api/analyze-resume', {
+      const response = await fetch('/api/upload-resume', {
         method: 'POST',
         body: formData,
       })

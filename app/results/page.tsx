@@ -11,16 +11,32 @@ interface AnalysisResult {
   overallScore: number
   strengths: string[]
   weaknesses: string[]
-  recommendations: string[]
+  suggestions: string[]
+  skills: string[]
+  experience: {
+    years: number
+    level: string
+    summary: string
+  }
+  education: {
+    degree: string
+    field: string
+    institution?: string
+  }
   jobMatches: Array<{
     title: string
     company: string
     matchScore: number
     description: string
+    requirements: string[]
   }>
-  skills: string[]
-  experience: string
-  education: string
+  keywords: string[]
+  atsScore: number
+  recommendations: {
+    immediate: string[]
+    longTerm: string[]
+    skills: string[]
+  }
 }
 
 export default function ResultsPage() {
@@ -60,35 +76,59 @@ export default function ResultsPage() {
       'Could benefit from more quantified achievements',
       'Missing some key industry keywords'
     ],
-    recommendations: [
+    suggestions: [
       'Add quantified achievements with specific numbers',
       'Include more action verbs in job descriptions',
       'Highlight leadership and team collaboration skills',
       'Add relevant certifications or courses'
     ],
+    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
+    experience: {
+      years: 5,
+      level: 'senior',
+      summary: 'Software development experience with web technologies'
+    },
+    education: {
+      degree: 'Bachelor',
+      field: 'Computer Science',
+      institution: 'University of Technology'
+    },
     jobMatches: [
       {
         title: 'Senior Software Engineer',
         company: 'TechCorp Inc.',
         matchScore: 92,
-        description: 'Full-stack development role with React and Node.js'
+        description: 'Full-stack development role with React and Node.js',
+        requirements: ['JavaScript', 'React', 'Node.js', 'Leadership']
       },
       {
         title: 'Full Stack Developer',
         company: 'StartupXYZ',
         matchScore: 88,
-        description: 'Building scalable web applications'
+        description: 'Building scalable web applications',
+        requirements: ['JavaScript', 'React', 'Node.js', 'TypeScript']
       },
       {
         title: 'Software Developer',
         company: 'Enterprise Solutions',
         matchScore: 85,
-        description: 'Enterprise software development'
+        description: 'Enterprise software development',
+        requirements: ['JavaScript', 'React', 'Node.js', 'SQL']
       }
     ],
-    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
-    experience: '5+ years in software development',
-    education: 'Bachelor of Computer Science'
+    keywords: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
+    atsScore: 75,
+    recommendations: {
+      immediate: [
+        'Add quantified achievements with specific numbers',
+        'Include more action verbs in job descriptions'
+      ],
+      longTerm: [
+        'Develop leadership skills',
+        'Get relevant certifications'
+      ],
+      skills: ['TypeScript', 'AWS', 'Docker']
+    }
   })
 
   if (loading) {
@@ -167,6 +207,9 @@ export default function ResultsPage() {
                   <p className="text-sm text-gray-600">
                     Your resume scores {analysis.overallScore}% based on ATS optimization and content quality
                   </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    ATS Score: {analysis.atsScore}%
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -234,15 +277,31 @@ export default function ResultsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-4">
-                {analysis.recommendations.map((recommendation, index) => (
-                  <div key={index} className="flex items-start p-4 bg-blue-50 rounded-lg">
-                    <div className="h-6 w-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 flex-shrink-0">
-                      {index + 1}
-                    </div>
-                    <span className="text-sm">{recommendation}</span>
-                  </div>
-                ))}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <h4 className="font-semibold mb-2">Immediate Actions</h4>
+                  <ul className="space-y-1">
+                    {analysis.recommendations.immediate.map((rec, index) => (
+                      <li key={index} className="text-sm text-gray-600">• {rec}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">Long-term Goals</h4>
+                  <ul className="space-y-1">
+                    {analysis.recommendations.longTerm.map((rec, index) => (
+                      <li key={index} className="text-sm text-gray-600">• {rec}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">Skills to Develop</h4>
+                  <ul className="space-y-1">
+                    {analysis.recommendations.skills.map((skill, index) => (
+                      <li key={index} className="text-sm text-gray-600">• {skill}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -307,8 +366,13 @@ export default function ResultsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <p className="text-sm"><strong>Experience:</strong> {analysis.experience}</p>
-                  <p className="text-sm"><strong>Education:</strong> {analysis.education}</p>
+                  <p className="text-sm"><strong>Years:</strong> {analysis.experience.years} years</p>
+                  <p className="text-sm"><strong>Level:</strong> {analysis.experience.level}</p>
+                  <p className="text-sm"><strong>Summary:</strong> {analysis.experience.summary}</p>
+                  <p className="text-sm"><strong>Education:</strong> {analysis.education.degree} in {analysis.education.field}</p>
+                  {analysis.education.institution && (
+                    <p className="text-sm"><strong>Institution:</strong> {analysis.education.institution}</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
