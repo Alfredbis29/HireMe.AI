@@ -91,50 +91,93 @@ export async function POST(request: NextRequest) {
         postedDate: '2024-01-11',
         applyUrl: 'https://linkedin.com/jobs/view/1234567894',
         linkedinUrl: 'https://linkedin.com/company/cloudscale'
+      },
+      {
+        id: '6',
+        title: 'Software Developer',
+        company: 'InnovateTech',
+        location: 'Chicago, IL',
+        type: 'Full-time',
+        salary: '$70,000 - $100,000',
+        description: 'Join our development team as a Software Developer. Work on exciting projects and grow your career with us.',
+        requirements: ['1+ years experience', 'Programming skills', 'Problem solving', 'Team collaboration'],
+        skills: ['JavaScript', 'Python', 'SQL', 'Git', 'Agile'],
+        postedDate: '2024-01-10',
+        applyUrl: 'https://linkedin.com/jobs/view/1234567895',
+        linkedinUrl: 'https://linkedin.com/company/innovatetech'
+      },
+      {
+        id: '7',
+        title: 'Web Developer',
+        company: 'Digital Agency',
+        location: 'Miami, FL',
+        type: 'Full-time',
+        salary: '$60,000 - $90,000',
+        description: 'We are looking for a Web Developer to create stunning websites and web applications for our clients.',
+        requirements: ['2+ years experience', 'HTML', 'CSS', 'JavaScript', 'Responsive design'],
+        skills: ['HTML', 'CSS', 'JavaScript', 'Bootstrap', 'WordPress'],
+        postedDate: '2024-01-09',
+        applyUrl: 'https://linkedin.com/jobs/view/1234567896',
+        linkedinUrl: 'https://linkedin.com/company/digitalagency'
+      },
+      {
+        id: '8',
+        title: 'Junior Developer',
+        company: 'TechStart',
+        location: 'Denver, CO',
+        type: 'Full-time',
+        salary: '$50,000 - $70,000',
+        description: 'Perfect opportunity for recent graduates or career changers. We provide mentorship and growth opportunities.',
+        requirements: ['Entry level', 'Basic programming knowledge', 'Eagerness to learn', 'Good communication'],
+        skills: ['Programming fundamentals', 'Problem solving', 'Learning ability', 'Communication'],
+        postedDate: '2024-01-08',
+        applyUrl: 'https://linkedin.com/jobs/view/1234567897',
+        linkedinUrl: 'https://linkedin.com/company/techstart'
       }
     ]
 
-    // Filter jobs based on user skills and experience
-    let filteredJobs = mockJobs
+    // Always return jobs - don't filter too strictly
+    let filteredJobs = [...mockJobs]
 
+    // If we have skills, try to match them, but don't exclude jobs completely
     if (skills && skills.length > 0) {
-      filteredJobs = mockJobs.filter(job => 
-        job.skills.some(skill => 
+      // Score jobs based on skill matches
+      filteredJobs = mockJobs.map(job => {
+        const matchingSkills = job.skills.filter(skill => 
           skills.some((userSkill: string) => 
             skill.toLowerCase().includes(userSkill.toLowerCase()) ||
-            userSkill.toLowerCase().includes(skill.toLowerCase())
+            userSkill.toLowerCase().includes(skill.toLowerCase()) ||
+            // Add more flexible matching
+            skill.toLowerCase().replace(/\s+/g, '') === userSkill.toLowerCase().replace(/\s+/g, '') ||
+            userSkill.toLowerCase().replace(/\s+/g, '') === skill.toLowerCase().replace(/\s+/g, '')
           )
         )
-      )
+        
+        return {
+          ...job,
+          matchScore: matchingSkills.length,
+          matchingSkills
+        }
+      })
+
+      // Sort by match score, but include all jobs
+      filteredJobs.sort((a, b) => b.matchScore - a.matchScore)
     }
 
+    // If we have a job title preference, boost those jobs
     if (jobTitle) {
-      filteredJobs = filteredJobs.filter(job => 
-        job.title.toLowerCase().includes(jobTitle.toLowerCase()) ||
-        jobTitle.toLowerCase().includes(job.title.toLowerCase())
-      )
+      filteredJobs = filteredJobs.map(job => {
+        const titleMatch = job.title.toLowerCase().includes(jobTitle.toLowerCase()) ||
+                          jobTitle.toLowerCase().includes(job.title.toLowerCase())
+        return {
+          ...job,
+          titleMatch: titleMatch,
+          matchScore: (job.matchScore || 0) + (titleMatch ? 2 : 0)
+        }
+      }).sort((a, b) => b.matchScore - a.matchScore)
     }
 
-    // Sort by relevance (jobs with more matching skills first)
-    filteredJobs.sort((a, b) => {
-      const aMatches = skills ? a.skills.filter(skill => 
-        skills.some((userSkill: string) => 
-          skill.toLowerCase().includes(userSkill.toLowerCase()) ||
-          userSkill.toLowerCase().includes(skill.toLowerCase())
-        )
-      ).length : 0
-      
-      const bMatches = skills ? b.skills.filter(skill => 
-        skills.some((userSkill: string) => 
-          skill.toLowerCase().includes(userSkill.toLowerCase()) ||
-          userSkill.toLowerCase().includes(skill.toLowerCase())
-        )
-      ).length : 0
-      
-      return bMatches - aMatches
-    })
-
-    // Limit to top 5 most relevant jobs
+    // Always return at least 3 jobs, even if no perfect matches
     const topJobs = filteredJobs.slice(0, 5)
 
     return NextResponse.json({
