@@ -160,16 +160,21 @@ export default function ResultsPage() {
               <Brain className="h-8 w-8 text-blue-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Authentication Required
+              Account Required
             </h1>
             <p className="text-gray-600 mb-6">
-              Please sign in to view your resume analysis results
+              Please create an account to view your resume analysis results
             </p>
           </div>
           <div className="space-y-4">
-            <Link href="/login">
+            <Link href="/signup">
               <Button size="lg" className="w-full">
-                Sign In to View Results
+                Create Free Account
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button variant="outline" size="lg" className="w-full">
+                Already have an account? Sign In
               </Button>
             </Link>
             <Link href="/">
