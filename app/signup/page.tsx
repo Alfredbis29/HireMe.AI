@@ -8,13 +8,93 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Brain, Chrome, Mail, Lock, ArrowLeft, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { Brain, Chrome, Mail, Lock, ArrowLeft, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  })
   const router = useRouter()
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleEmailPasswordSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // Validate form
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      setError('All fields are required')
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      setError('')
+
+      // Register user
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed')
+      }
+
+      // Auto sign in after registration
+      const signInResult = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      })
+
+      if (signInResult?.error) {
+        setError('Account created but failed to sign in. Please try signing in manually.')
+      } else {
+        setSuccess(true)
+        setTimeout(() => {
+          router.push('/')
+          router.refresh()
+        }, 2000)
+      }
+    } catch (error) {
+      console.error('Registration error:', error)
+      setError(error instanceof Error ? error.message : 'Registration failed')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleGoogleSignUp = async () => {
     try {
@@ -88,24 +168,97 @@ export default function SignUpPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Sign Up</CardTitle>
             <CardDescription>
-              Choose your preferred sign-up method
+              Create your account to get started
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Google Sign Up */}
-            <Button
-              onClick={handleGoogleSignUp}
-              disabled={isLoading}
-              className="w-full h-12 text-base font-medium"
-              variant="outline"
-            >
-              {isLoading ? (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              ) : (
-                <Chrome className="mr-2 h-5 w-5" />
-              )}
-              {isLoading ? 'Creating account...' : 'Sign up with Google'}
-            </Button>
+            {/* Email/Password Form */}
+            <form onSubmit={handleEmailPasswordSignUp} className="space-y-4">
+              <div>
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Confirm your password"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 text-base font-medium"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="mr-2 h-5 w-5" />
+                    Create Account
+                  </>
+                )}
+              </Button>
+            </form>
 
             {/* Error Message */}
             {error && (
@@ -127,14 +280,15 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {/* Demo Sign Up */}
+            {/* Google Sign Up */}
             <Button
-              onClick={() => router.push('/login')}
-              variant="secondary"
+              onClick={handleGoogleSignUp}
+              disabled={isLoading}
               className="w-full h-12 text-base font-medium"
+              variant="outline"
             >
-              <Mail className="mr-2 h-5 w-5" />
-              Continue as Guest (Demo)
+              <Chrome className="mr-2 h-5 w-5" />
+              Sign up with Google
             </Button>
 
             {/* Benefits */}
