@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide any unwanted injected content */
+[class*="careerflow"],
+[class*="Signintoviewdetails"],
+[class*="youAreOneStepAwayFrom"] {
+  display: none !important;
+}
+
+/* Hide any third-party widgets that might be injected */
+div[style*="position: fixed"][style*="bottom"] {
+  display: none !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
