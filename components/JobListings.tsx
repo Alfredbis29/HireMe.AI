@@ -1,0 +1,273 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { 
+  MapPin, 
+  Clock, 
+  DollarSign, 
+  ExternalLink, 
+  Linkedin, 
+  Briefcase,
+  Calendar,
+  Users
+} from 'lucide-react'
+
+interface JobListing {
+  id: string
+  title: string
+  company: string
+  location: string
+  type: string
+  salary?: string
+  description: string
+  requirements: string[]
+  skills: string[]
+  postedDate: string
+  applyUrl: string
+  linkedinUrl: string
+}
+
+interface JobListingsProps {
+  skills: string[]
+  experience: {
+    years: number
+    level: string
+  }
+  onJobClick?: (job: JobListing) => void
+}
+
+export default function JobListings({ skills, experience, onJobClick }: JobListingsProps) {
+  const [jobs, setJobs] = useState<JobListing[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/jobs/search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            skills,
+            experience: experience.years,
+            jobTitle: experience.level
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs')
+        }
+
+        const data = await response.json()
+        setJobs(data.jobs || [])
+      } catch (error) {
+        console.error('Error fetching jobs:', error)
+        setError('Failed to load job listings')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchJobs()
+  }, [skills, experience])
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - date.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays === 1) return '1 day ago'
+    if (diffDays < 7) return `${diffDays} days ago`
+    return date.toLocaleDateString()
+  }
+
+  const handleApply = (job: JobListing) => {
+    window.open(job.applyUrl, '_blank')
+  }
+
+  const handleLinkedIn = (job: JobListing) => {
+    window.open(job.linkedinUrl, '_blank')
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Finding relevant job opportunities...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600 mb-4">{error}</p>
+        <Button onClick={() => window.location.reload()}>
+          Try Again
+        </Button>
+      </div>
+    )
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <Briefcase className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Jobs Found</h3>
+        <p className="text-gray-600 mb-4">
+          We couldn't find any jobs matching your skills and experience.
+        </p>
+        <Button onClick={() => window.location.reload()}>
+          Refresh Search
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          🎯 Recommended Jobs for You
+        </h2>
+        <p className="text-gray-600">
+          Based on your skills and experience, here are the best opportunities
+        </p>
+      </div>
+
+      <div className="grid gap-6">
+        {jobs.map((job) => (
+          <Card key={job.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-xl text-gray-900 mb-2">
+                    {job.title}
+                  </CardTitle>
+                  <CardDescription className="text-lg font-medium text-blue-600">
+                    {job.company}
+                  </CardDescription>
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleLinkedIn(job)}
+                    className="flex items-center"
+                  >
+                    <Linkedin className="h-4 w-4 mr-1" />
+                    LinkedIn
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleApply(job)}
+                    className="flex items-center"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-1" />
+                    Apply Now
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Job Details */}
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                  <div className="flex items-center">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    {job.location}
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-1" />
+                    {job.type}
+                  </div>
+                  {job.salary && (
+                    <div className="flex items-center">
+                      <DollarSign className="h-4 w-4 mr-1" />
+                      {job.salary}
+                    </div>
+                  )}
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    {formatDate(job.postedDate)}
+                  </div>
+                </div>
+
+                {/* Job Description */}
+                <div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {job.description}
+                  </p>
+                </div>
+
+                {/* Skills */}
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Required Skills:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {job.skills.map((skill, index) => (
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="text-xs"
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Requirements */}
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Requirements:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    {job.requirements.map((requirement, index) => (
+                      <li key={index} className="flex items-start">
+                        <span className="text-blue-500 mr-2">•</span>
+                        {requirement}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex space-x-3 pt-4 border-t">
+                  <Button
+                    onClick={() => handleApply(job)}
+                    className="flex-1"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Apply on LinkedIn
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleLinkedIn(job)}
+                    className="flex-1"
+                  >
+                    <Linkedin className="h-4 w-4 mr-2" />
+                    View Company
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div className="text-center pt-6 border-t">
+        <p className="text-sm text-gray-500">
+          💡 <strong>Pro Tip:</strong> Keep your LinkedIn profile updated and active to increase your chances of being noticed by recruiters!
+        </p>
+      </div>
+    </div>
+  )
+}
