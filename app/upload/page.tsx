@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
+import UserProfile from '@/components/UserProfile'
 import { ArrowLeft, Brain, FileText, Upload, X } from 'lucide-react'
 
 export default function UploadPage() {
@@ -109,12 +110,15 @@ export default function UploadPage() {
               <Brain className="h-8 w-8 text-blue-600" />
               <span className="text-2xl font-bold text-gray-900">HireMe.AI</span>
             </div>
-            <Link href="/">
-              <Button variant="outline">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/">
+                <Button variant="outline">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Home
+                </Button>
+              </Link>
+              <UserProfile />
+            </div>
           </div>
         </div>
       </nav>

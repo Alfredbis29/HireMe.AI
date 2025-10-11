@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import UserProfile from '@/components/UserProfile'
 import { ArrowRight, Brain, FileText, Target, Users, Zap } from 'lucide-react'
 
 export default function Home() {
@@ -15,9 +16,7 @@ export default function Home() {
               <span className="text-2xl font-bold text-gray-900">HireMe.AI</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/upload">
-                <Button variant="outline">Get Started</Button>
-              </Link>
+              <UserProfile />
             </div>
           </div>
         </div>
