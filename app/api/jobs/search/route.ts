@@ -15,134 +15,230 @@ interface JobListing {
   linkedinUrl: string
 }
 
+interface LinkedInJobSearchParams {
+  skills: string[]
+  experience: number
+  location?: string
+  jobTitle?: string
+}
+
+// LinkedIn Job Search API Integration
+async function fetchLinkedInJobs(params: LinkedInJobSearchParams): Promise<JobListing[]> {
+  try {
+    // LinkedIn Job Search API endpoint
+    const linkedinApiUrl = 'https://api.linkedin.com/v2/jobSearch'
+    
+    // Build search query based on user skills and experience
+    const searchQuery = buildLinkedInSearchQuery(params)
+    
+    const response = await fetch(linkedinApiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.LINKEDIN_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'X-Restli-Protocol-Version': '2.0.0'
+      },
+      body: JSON.stringify({
+        search: {
+          keywords: searchQuery.keywords,
+          locationName: searchQuery.location,
+          jobType: searchQuery.jobType,
+          experienceLevel: searchQuery.experienceLevel,
+          sortBy: 'RELEVANCE'
+        },
+        count: 10
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`LinkedIn API error: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return transformLinkedInJobs(data.elements || [])
+    
+  } catch (error) {
+    console.error('LinkedIn API error:', error)
+    throw error
+  }
+}
+
+// Build LinkedIn search query from user parameters
+function buildLinkedInSearchQuery(params: LinkedInJobSearchParams) {
+  const keywords = params.skills.join(' ')
+  const location = params.location || 'United States'
+  
+  // Map experience years to LinkedIn experience levels
+  let experienceLevel = 'ENTRY_LEVEL'
+  if (params.experience >= 5) experienceLevel = 'SENIOR_LEVEL'
+  else if (params.experience >= 3) experienceLevel = 'MID_LEVEL'
+  
+  return {
+    keywords,
+    location,
+    jobType: 'FULL_TIME',
+    experienceLevel
+  }
+}
+
+// Transform LinkedIn job data to our format
+function transformLinkedInJobs(linkedinJobs: any[]): JobListing[] {
+  return linkedinJobs.map((job, index) => ({
+    id: job.id || `linkedin-${index}`,
+    title: job.title || 'Software Developer',
+    company: job.companyName || 'Company',
+    location: job.locationName || 'Remote',
+    type: job.jobType || 'Full-time',
+    salary: job.salaryRange ? `${job.salaryRange.min}-${job.salaryRange.max}` : undefined,
+    description: job.description || 'Join our team and work on exciting projects.',
+    requirements: extractRequirements(job.description || ''),
+    skills: extractSkills(job.description || ''),
+    postedDate: job.postedDate || new Date().toISOString(),
+    applyUrl: job.applyUrl || `https://linkedin.com/jobs/view/${job.id}`,
+    linkedinUrl: job.companyUrl || 'https://linkedin.com'
+  }))
+}
+
+// Extract requirements from job description
+function extractRequirements(description: string): string[] {
+  const requirements = []
+  const lines = description.split('\n')
+  
+  for (const line of lines) {
+    if (line.toLowerCase().includes('required') || line.toLowerCase().includes('must have')) {
+      requirements.push(line.trim())
+    }
+  }
+  
+  return requirements.slice(0, 5) // Limit to 5 requirements
+}
+
+// Extract skills from job description
+function extractSkills(description: string): string[] {
+  const commonSkills = [
+    'JavaScript', 'Python', 'Java', 'React', 'Node.js', 'TypeScript',
+    'AWS', 'Docker', 'Kubernetes', 'SQL', 'MongoDB', 'Git',
+    'HTML', 'CSS', 'Angular', 'Vue.js', 'Express', 'Django'
+  ]
+  
+  const foundSkills = commonSkills.filter(skill => 
+    description.toLowerCase().includes(skill.toLowerCase())
+  )
+  
+  return foundSkills.slice(0, 6) // Limit to 6 skills
+}
+
+// Get mock jobs as fallback
+function getMockJobs(): JobListing[] {
+  return [
+    {
+      id: '1',
+      title: 'Senior Software Engineer',
+      company: 'TechCorp Inc.',
+      location: 'San Francisco, CA',
+      type: 'Full-time',
+      salary: '$120,000 - $160,000',
+      description: 'We are looking for a Senior Software Engineer to join our growing team. You will be responsible for developing and maintaining our core platform.',
+      requirements: ['5+ years experience', 'JavaScript', 'React', 'Node.js', 'Leadership skills'],
+      skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'AWS'],
+      postedDate: '2024-01-15',
+      applyUrl: 'https://linkedin.com/jobs/view/1234567890',
+      linkedinUrl: 'https://linkedin.com/company/techcorp'
+    },
+    {
+      id: '2',
+      title: 'Full Stack Developer',
+      company: 'StartupXYZ',
+      location: 'Remote',
+      type: 'Full-time',
+      salary: '$90,000 - $130,000',
+      description: 'Join our fast-growing startup as a Full Stack Developer. Work on cutting-edge projects and help shape our product.',
+      requirements: ['3+ years experience', 'JavaScript', 'React', 'Python', 'Database design'],
+      skills: ['JavaScript', 'React', 'Python', 'PostgreSQL', 'Docker'],
+      postedDate: '2024-01-14',
+      applyUrl: 'https://linkedin.com/jobs/view/1234567891',
+      linkedinUrl: 'https://linkedin.com/company/startupxyz'
+    },
+    {
+      id: '3',
+      title: 'Frontend Developer',
+      company: 'DesignStudio',
+      location: 'New York, NY',
+      type: 'Full-time',
+      salary: '$80,000 - $120,000',
+      description: 'We are seeking a talented Frontend Developer to create beautiful and responsive user interfaces.',
+      requirements: ['2+ years experience', 'React', 'TypeScript', 'CSS', 'UI/UX design'],
+      skills: ['React', 'TypeScript', 'CSS', 'Figma', 'Responsive Design'],
+      postedDate: '2024-01-13',
+      applyUrl: 'https://linkedin.com/jobs/view/1234567892',
+      linkedinUrl: 'https://linkedin.com/company/designstudio'
+    },
+    {
+      id: '4',
+      title: 'Backend Developer',
+      company: 'DataFlow Systems',
+      location: 'Austin, TX',
+      type: 'Full-time',
+      salary: '$100,000 - $140,000',
+      description: 'Join our backend team to build scalable APIs and microservices for our data processing platform.',
+      requirements: ['4+ years experience', 'Node.js', 'Python', 'Database optimization', 'API design'],
+      skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'Docker'],
+      postedDate: '2024-01-12',
+      applyUrl: 'https://linkedin.com/jobs/view/1234567893',
+      linkedinUrl: 'https://linkedin.com/company/dataflow'
+    },
+    {
+      id: '5',
+      title: 'DevOps Engineer',
+      company: 'CloudScale',
+      location: 'Seattle, WA',
+      type: 'Full-time',
+      salary: '$110,000 - $150,000',
+      description: 'We need a DevOps Engineer to help us scale our infrastructure and improve our deployment processes.',
+      requirements: ['3+ years experience', 'AWS', 'Docker', 'Kubernetes', 'CI/CD'],
+      skills: ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'Jenkins'],
+      postedDate: '2024-01-11',
+      applyUrl: 'https://linkedin.com/jobs/view/1234567894',
+      linkedinUrl: 'https://linkedin.com/company/cloudscale'
+    }
+  ]
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { skills, experience, location, jobTitle } = await request.json()
 
-    // Mock job data - In a real implementation, you would integrate with LinkedIn API
-    // or other job search APIs like Indeed, Glassdoor, etc.
-    const mockJobs: JobListing[] = [
-      {
-        id: '1',
-        title: 'Senior Software Engineer',
-        company: 'TechCorp Inc.',
-        location: 'San Francisco, CA',
-        type: 'Full-time',
-        salary: '$120,000 - $160,000',
-        description: 'We are looking for a Senior Software Engineer to join our growing team. You will be responsible for developing and maintaining our core platform.',
-        requirements: ['5+ years experience', 'JavaScript', 'React', 'Node.js', 'Leadership skills'],
-        skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'AWS'],
-        postedDate: '2024-01-15',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567890',
-        linkedinUrl: 'https://linkedin.com/company/techcorp'
-      },
-      {
-        id: '2',
-        title: 'Full Stack Developer',
-        company: 'StartupXYZ',
-        location: 'Remote',
-        type: 'Full-time',
-        salary: '$90,000 - $130,000',
-        description: 'Join our fast-growing startup as a Full Stack Developer. Work on cutting-edge projects and help shape our product.',
-        requirements: ['3+ years experience', 'JavaScript', 'React', 'Python', 'Database design'],
-        skills: ['JavaScript', 'React', 'Python', 'PostgreSQL', 'Docker'],
-        postedDate: '2024-01-14',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567891',
-        linkedinUrl: 'https://linkedin.com/company/startupxyz'
-      },
-      {
-        id: '3',
-        title: 'Frontend Developer',
-        company: 'DesignStudio',
-        location: 'New York, NY',
-        type: 'Full-time',
-        salary: '$80,000 - $120,000',
-        description: 'We are seeking a talented Frontend Developer to create beautiful and responsive user interfaces.',
-        requirements: ['2+ years experience', 'React', 'TypeScript', 'CSS', 'UI/UX design'],
-        skills: ['React', 'TypeScript', 'CSS', 'Figma', 'Responsive Design'],
-        postedDate: '2024-01-13',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567892',
-        linkedinUrl: 'https://linkedin.com/company/designstudio'
-      },
-      {
-        id: '4',
-        title: 'Backend Developer',
-        company: 'DataFlow Systems',
-        location: 'Austin, TX',
-        type: 'Full-time',
-        salary: '$100,000 - $140,000',
-        description: 'Join our backend team to build scalable APIs and microservices for our data processing platform.',
-        requirements: ['4+ years experience', 'Node.js', 'Python', 'Database optimization', 'API design'],
-        skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'Docker'],
-        postedDate: '2024-01-12',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567893',
-        linkedinUrl: 'https://linkedin.com/company/dataflow'
-      },
-      {
-        id: '5',
-        title: 'DevOps Engineer',
-        company: 'CloudScale',
-        location: 'Seattle, WA',
-        type: 'Full-time',
-        salary: '$110,000 - $150,000',
-        description: 'We need a DevOps Engineer to help us scale our infrastructure and improve our deployment processes.',
-        requirements: ['3+ years experience', 'AWS', 'Docker', 'Kubernetes', 'CI/CD'],
-        skills: ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'Jenkins'],
-        postedDate: '2024-01-11',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567894',
-        linkedinUrl: 'https://linkedin.com/company/cloudscale'
-      },
-      {
-        id: '6',
-        title: 'Software Developer',
-        company: 'InnovateTech',
-        location: 'Chicago, IL',
-        type: 'Full-time',
-        salary: '$70,000 - $100,000',
-        description: 'Join our development team as a Software Developer. Work on exciting projects and grow your career with us.',
-        requirements: ['1+ years experience', 'Programming skills', 'Problem solving', 'Team collaboration'],
-        skills: ['JavaScript', 'Python', 'SQL', 'Git', 'Agile'],
-        postedDate: '2024-01-10',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567895',
-        linkedinUrl: 'https://linkedin.com/company/innovatetech'
-      },
-      {
-        id: '7',
-        title: 'Web Developer',
-        company: 'Digital Agency',
-        location: 'Miami, FL',
-        type: 'Full-time',
-        salary: '$60,000 - $90,000',
-        description: 'We are looking for a Web Developer to create stunning websites and web applications for our clients.',
-        requirements: ['2+ years experience', 'HTML', 'CSS', 'JavaScript', 'Responsive design'],
-        skills: ['HTML', 'CSS', 'JavaScript', 'Bootstrap', 'WordPress'],
-        postedDate: '2024-01-09',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567896',
-        linkedinUrl: 'https://linkedin.com/company/digitalagency'
-      },
-      {
-        id: '8',
-        title: 'Junior Developer',
-        company: 'TechStart',
-        location: 'Denver, CO',
-        type: 'Full-time',
-        salary: '$50,000 - $70,000',
-        description: 'Perfect opportunity for recent graduates or career changers. We provide mentorship and growth opportunities.',
-        requirements: ['Entry level', 'Basic programming knowledge', 'Eagerness to learn', 'Good communication'],
-        skills: ['Programming fundamentals', 'Problem solving', 'Learning ability', 'Communication'],
-        postedDate: '2024-01-08',
-        applyUrl: 'https://linkedin.com/jobs/view/1234567897',
-        linkedinUrl: 'https://linkedin.com/company/techstart'
+    // Try to fetch real LinkedIn jobs first, fallback to mock data
+    let jobs = []
+    
+    try {
+      // LinkedIn Job Search API integration
+      const linkedinJobs = await fetchLinkedInJobs({
+        skills,
+        experience,
+        location,
+        jobTitle
+      })
+      
+      if (linkedinJobs && linkedinJobs.length > 0) {
+        jobs = linkedinJobs
+      } else {
+        // Fallback to mock data if LinkedIn API fails
+        jobs = getMockJobs()
       }
-    ]
+    } catch (error) {
+      console.error('LinkedIn API error:', error)
+      // Fallback to mock data
+      jobs = getMockJobs()
+    }
 
     // Always return jobs - don't filter too strictly
-    let filteredJobs = [...mockJobs]
+    let filteredJobs = [...jobs]
 
     // If we have skills, try to match them, but don't exclude jobs completely
     if (skills && skills.length > 0) {
       // Score jobs based on skill matches
-      filteredJobs = mockJobs.map(job => {
+      filteredJobs = jobs.map(job => {
         const matchingSkills = job.skills.filter(skill => 
           skills.some((userSkill: string) => 
             skill.toLowerCase().includes(userSkill.toLowerCase()) ||
@@ -188,7 +284,8 @@ export async function POST(request: NextRequest) {
         experience,
         location,
         jobTitle
-      }
+      },
+      source: jobs.length > 0 && jobs[0].id.startsWith('linkedin-') ? 'linkedin' : 'mock'
     })
 
   } catch (error) {
