@@ -9,7 +9,7 @@
 
 **Transform your career with AI-powered resume analysis and job matching**
 
-[🚀 Live Demo](https://hireme-ai.vercel.app) • [📚 Documentation](./API_DOCUMENTATION.md) • [🛠 Setup Guide](#-getting-started)
+[🛠 Setup Guide](#-getting-started) • [📚 Documentation](#-documentation) • [🔐 Authentication](#-authentication)
 
 </div>
 
@@ -17,8 +17,14 @@
 
 ## ✨ Features
 
+### 🔐 **Authentication System**
+- **Email/Password Registration** - Traditional sign-up with secure password hashing
+- **Google OAuth Integration** - One-click authentication with Google accounts
+- **Secure Session Management** - JWT-based authentication with NextAuth.js
+- **User Profile Management** - Personalized experience with user data
+
 ### 🤖 **AI-Powered Analysis**
-- **GPT-4 Integration** - Advanced resume analysis using OpenAI's latest model
+- **OpenAI Integration** - Advanced resume analysis using OpenAI API
 - **Comprehensive Scoring** - Overall resume quality assessment (0-100)
 - **ATS Optimization** - Applicant Tracking System compatibility scoring
 - **Skills Extraction** - Automatic identification of technical and soft skills
@@ -49,6 +55,7 @@
 - **Node.js** 18+ 
 - **npm** or **yarn**
 - **OpenAI API Key** ([Get one here](https://platform.openai.com/api-keys))
+- **Google OAuth Credentials** (Optional - for Google sign-in)
 
 ### Installation
 
@@ -64,14 +71,24 @@
    ```
 
 3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Edit `.env.local` and add your OpenAI API key:
+   Create `.env.local` file and add the following:
    ```env
+   # OpenAI API Key (Required)
    OPENAI_API_KEY=your_openai_api_key_here
    NEXT_PUBLIC_APP_URL=http://localhost:3000
+   
+   # NextAuth Configuration (Required)
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your_nextauth_secret_here
+   
+   # Google OAuth (Optional - for Google sign-in)
+   GOOGLE_CLIENT_ID=your_google_client_id_here
+   GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   ```
+   
+   **Generate NextAuth Secret:**
+   ```bash
+   openssl rand -base64 32
    ```
 
 4. **Start the development server**
@@ -88,60 +105,64 @@
 
 ### 🏠 **Home Page** (`/`)
 - Beautiful landing page with feature showcase
-- Call-to-action buttons for resume upload
+- Call-to-action buttons for account creation
 - Professional gradient design
 - Responsive layout for all devices
 
+### 🔐 **Authentication Pages**
+- **Sign Up** (`/signup`) - Email/password registration and Google OAuth
+- **Login** (`/login`) - Email/password login and Google OAuth
+- Secure password hashing with bcryptjs
+- Form validation and error handling
+
 ### 📤 **Upload Page** (`/upload`)
+- **Authentication Required** - Must be logged in to access
 - Drag-and-drop file upload interface
 - Support for PDF, DOC, and DOCX files
 - Real-time upload progress
 - File validation and error handling
 
 ### 📊 **Results Page** (`/results`)
+- **Authentication Required** - Must be logged in to access
 - Comprehensive AI analysis results
 - Interactive score visualization
 - Job matching recommendations
-- Downloadable reports
-
-### 🧪 **Test API** (`/test-api`)
-- Interactive API testing interface
-- Real-time resume analysis
-- Error handling demonstration
-- Development tools
+- Personalized user experience
 
 ---
 
 ## 🔌 API Endpoints
 
-### `POST /api/analyzeResume`
-Analyzes a resume and returns comprehensive feedback.
+### Authentication Endpoints
+- **`POST /api/auth/register`** - User registration with email/password
+- **`POST /api/auth/login`** - User login with credentials
+- **`POST /api/auth/[...nextauth]`** - NextAuth.js authentication
 
-**Request:**
-```json
-{
-  "resumeText": "Your resume content here...",
-  "jobTitle": "Software Engineer", // Optional
-  "industry": "Technology"         // Optional
-}
+### Resume Analysis Endpoints
+- **`POST /api/upload-resume`** - File upload and analysis
+- **`GET /api/health`** - Health check endpoint
+
+### Example API Usage
+```javascript
+// Register a new user
+const response = await fetch('/api/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: 'John Doe',
+    email: 'john@example.com',
+    password: 'securepassword'
+  })
+});
+
+// Upload resume for analysis
+const formData = new FormData();
+formData.append('file', resumeFile);
+const analysis = await fetch('/api/upload-resume', {
+  method: 'POST',
+  body: formData
+});
 ```
-
-**Response:**
-```json
-{
-  "overallScore": 85,
-  "strengths": ["Strong technical background", "Relevant experience"],
-  "weaknesses": ["Missing quantified achievements"],
-  "suggestions": ["Add specific metrics", "Include more keywords"],
-  "skills": ["JavaScript", "React", "Node.js"],
-  "jobMatches": [...],
-  "atsScore": 78,
-  "recommendations": {...}
-}
-```
-
-### `GET /api/health`
-Health check endpoint for monitoring.
 
 ---
 
@@ -166,19 +187,22 @@ npm run lint          # Run ESLint
 hireme-ai/
 ├── app/                    # Next.js 14 App Router
 │   ├── api/               # API routes
-│   │   ├── analyzeResume/ # Main analysis endpoint
+│   │   ├── auth/          # Authentication endpoints
+│   │   ├── upload-resume/ # File upload and analysis
 │   │   └── health/        # Health check
-│   ├── upload/            # Upload page
-│   ├── results/           # Results page
-│   ├── test-api/          # API testing page
+│   ├── signup/            # Registration page
+│   ├── login/             # Login page
+│   ├── upload/            # Upload page (protected)
+│   ├── results/           # Results page (protected)
 │   └── globals.css        # Global styles
 ├── components/            # Reusable components
 │   ├── ui/               # shadcn/ui components
-│   └── ResumeAnalyzer.tsx # Main analysis component
-├── hooks/                # Custom React hooks
+│   ├── providers/        # Context providers
+│   └── UserProfile.tsx   # User profile component
 ├── lib/                  # Utility functions
+│   └── db.ts            # User database functions
 ├── types/                # TypeScript interfaces
-└── public/               # Static assets
+└── data/                 # User data storage (gitignored)
 ```
 
 ### Key Technologies
@@ -187,7 +211,9 @@ hireme-ai/
 - **Language**: TypeScript 5.0
 - **Styling**: Tailwind CSS 3.3
 - **Components**: shadcn/ui
-- **AI**: OpenAI GPT-4
+- **Authentication**: NextAuth.js with JWT
+- **Password Hashing**: bcryptjs
+- **AI**: OpenAI API
 - **HTTP Client**: Axios
 - **Forms**: React Hook Form
 - **File Upload**: React Dropzone
@@ -225,13 +251,24 @@ CMD ["npm", "start"]
 
 ---
 
-## 📊 Performance
+## 🔐 Authentication
 
-- **Lighthouse Score**: 95+ across all metrics
-- **Core Web Vitals**: Excellent
-- **Bundle Size**: Optimized with Next.js
-- **Loading Speed**: < 2s initial load
-- **SEO**: Fully optimized
+### User Registration & Login
+- **Email/Password**: Traditional authentication with secure password hashing
+- **Google OAuth**: One-click authentication with Google accounts
+- **Session Management**: JWT-based sessions with NextAuth.js
+- **Password Security**: bcryptjs hashing with salt rounds
+
+### Authentication Flow
+1. **New Users**: Visit home → Sign up → Create account → Access features
+2. **Returning Users**: Visit home → Sign in → Access features
+3. **Protected Routes**: Upload and results pages require authentication
+
+### Security Features
+- **Password Hashing**: Secure bcryptjs implementation
+- **Input Validation**: Email format and required field validation
+- **Error Handling**: User-friendly error messages
+- **Session Security**: Proper token management
 
 ---
 
@@ -256,16 +293,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- **Documentation**: [API Documentation](./API_DOCUMENTATION.md)
+- **Documentation**: See sections above for setup and usage
 - **Issues**: [GitHub Issues](https://github.com/Alfredbis29/HireMe.AI/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Alfredbis29/HireMe.AI/discussions)
-- **Email**: support@hireme-ai.com
+- **Authentication Setup**: See [Google OAuth Setup Guide](./GOOGLE_OAUTH_SETUP.md)
+- **Authentication Flow**: See [Authentication Flow Guide](./AUTHENTICATION_FLOW.md)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **OpenAI** for providing the GPT-4 API
+- **OpenAI** for providing the AI API
+- **NextAuth.js** for the authentication framework
 - **Vercel** for the amazing Next.js framework
 - **Tailwind CSS** for the utility-first CSS framework
 - **shadcn/ui** for the beautiful component library
