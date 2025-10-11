@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -40,10 +41,17 @@ interface AnalysisResult {
 }
 
 export default function ResultsPage() {
+  const { data: session, status } = useSession()
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Check authentication first
+    if (status === 'unauthenticated') {
+      setLoading(false)
+      return
+    }
+
     const urlParams = new URLSearchParams(window.location.search)
     const analysisData = urlParams.get('analysis')
     
@@ -61,7 +69,7 @@ export default function ResultsPage() {
       setAnalysis(getDemoAnalysis())
     }
     setLoading(false)
-  }, [])
+  }, [status])
 
   const getDemoAnalysis = (): AnalysisResult => ({
     overallScore: 78,
@@ -137,6 +145,39 @@ export default function ResultsPage() {
         <div className="text-center">
           <Brain className="h-12 w-12 text-blue-600 animate-spin mx-auto mb-4" />
           <p className="text-lg text-gray-600">Loading your analysis...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show authentication required if not logged in
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="mb-6">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Brain className="h-8 w-8 text-blue-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Authentication Required
+            </h1>
+            <p className="text-gray-600 mb-6">
+              Please sign in to view your resume analysis results
+            </p>
+          </div>
+          <div className="space-y-4">
+            <Link href="/login">
+              <Button size="lg" className="w-full">
+                Sign In to View Results
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button variant="outline" className="w-full">
+                Back to Home
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     )
