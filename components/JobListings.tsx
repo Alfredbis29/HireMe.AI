@@ -43,6 +43,7 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
   const [jobs, setJobs] = useState<JobListing[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [searchInfo, setSearchInfo] = useState<{filters?: {dateRange?: string, recentJobsOnly?: boolean}}>({})
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -66,6 +67,7 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
 
         const data = await response.json()
         setJobs(data.jobs || [])
+        setSearchInfo(data)
       } catch (error) {
         console.error('Error fetching jobs:', error)
         // Fallback: show some default jobs even if API fails
@@ -184,9 +186,17 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           🎯 Recommended Jobs for You
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-4">
           Based on your skills and experience, here are the best opportunities
         </p>
+        
+        {/* Date Filter Info */}
+        {searchInfo.filters?.recentJobsOnly && (
+          <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium mb-4">
+            <Calendar className="h-4 w-4 mr-2" />
+            Showing jobs posted in the last 7 days
+          </div>
+        )}
       </div>
 
       <div className="grid gap-6">

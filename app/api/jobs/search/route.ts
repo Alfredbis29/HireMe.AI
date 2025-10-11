@@ -128,8 +128,29 @@ function extractSkills(description: string): string[] {
   return foundSkills.slice(0, 6) // Limit to 6 skills
 }
 
-// Get mock jobs as fallback
+// Get current date and calculate dates for recent jobs
+function getRecentDates() {
+  const now = new Date()
+  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000)
+  const fourDaysAgo = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000)
+  const sixDaysAgo = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
+  const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000)
+  
+  return {
+    today: now.toISOString().split('T')[0],
+    oneDayAgo: oneDayAgo.toISOString().split('T')[0],
+    twoDaysAgo: twoDaysAgo.toISOString().split('T')[0],
+    fourDaysAgo: fourDaysAgo.toISOString().split('T')[0],
+    sixDaysAgo: sixDaysAgo.toISOString().split('T')[0],
+    oneWeekAgo: oneWeekAgo.toISOString().split('T')[0]
+  }
+}
+
+// Get mock jobs as fallback with recent dates
 function getMockJobs(): JobListing[] {
+  const dates = getRecentDates()
+  
   return [
     {
       id: '1',
@@ -141,7 +162,7 @@ function getMockJobs(): JobListing[] {
       description: 'We are looking for a Senior Software Engineer to join our growing team. You will be responsible for developing and maintaining our core platform.',
       requirements: ['5+ years experience', 'JavaScript', 'React', 'Node.js', 'Leadership skills'],
       skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'AWS'],
-      postedDate: '2024-01-15',
+      postedDate: dates.oneDayAgo, // Posted 1 day ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Senior%20Software%20Engineer%20JavaScript%20React',
       linkedinUrl: 'https://linkedin.com/company/techcorp'
     },
@@ -155,7 +176,7 @@ function getMockJobs(): JobListing[] {
       description: 'Join our fast-growing startup as a Full Stack Developer. Work on cutting-edge projects and help shape our product.',
       requirements: ['3+ years experience', 'JavaScript', 'React', 'Python', 'Database design'],
       skills: ['JavaScript', 'React', 'Python', 'PostgreSQL', 'Docker'],
-      postedDate: '2024-01-14',
+      postedDate: dates.twoDaysAgo, // Posted 2 days ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer%20JavaScript%20React%20Python',
       linkedinUrl: 'https://linkedin.com/company/startupxyz'
     },
@@ -169,7 +190,7 @@ function getMockJobs(): JobListing[] {
       description: 'We are seeking a talented Frontend Developer to create beautiful and responsive user interfaces.',
       requirements: ['2+ years experience', 'React', 'TypeScript', 'CSS', 'UI/UX design'],
       skills: ['React', 'TypeScript', 'CSS', 'Figma', 'Responsive Design'],
-      postedDate: '2024-01-13',
+      postedDate: dates.fourDaysAgo, // Posted 4 days ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Frontend%20Developer%20React%20TypeScript',
       linkedinUrl: 'https://linkedin.com/company/designstudio'
     },
@@ -183,7 +204,7 @@ function getMockJobs(): JobListing[] {
       description: 'Join our backend team to build scalable APIs and microservices for our data processing platform.',
       requirements: ['4+ years experience', 'Node.js', 'Python', 'Database optimization', 'API design'],
       skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'Docker'],
-      postedDate: '2024-01-12',
+      postedDate: dates.sixDaysAgo, // Posted 6 days ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Backend%20Developer%20Node.js%20Python',
       linkedinUrl: 'https://linkedin.com/company/dataflow'
     },
@@ -197,9 +218,37 @@ function getMockJobs(): JobListing[] {
       description: 'We need a DevOps Engineer to help us scale our infrastructure and improve our deployment processes.',
       requirements: ['3+ years experience', 'AWS', 'Docker', 'Kubernetes', 'CI/CD'],
       skills: ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'Jenkins'],
-      postedDate: '2024-01-11',
+      postedDate: dates.oneWeekAgo, // Posted exactly 1 week ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=DevOps%20Engineer%20AWS%20Docker%20Kubernetes',
       linkedinUrl: 'https://linkedin.com/company/cloudscale'
+    },
+    {
+      id: '6',
+      title: 'React Developer',
+      company: 'InnovateTech',
+      location: 'Chicago, IL',
+      type: 'Full-time',
+      salary: '$85,000 - $125,000',
+      description: 'Join our innovative team as a React Developer. Work on modern web applications and contribute to our growing platform.',
+      requirements: ['2+ years experience', 'React', 'JavaScript', 'Redux', 'Testing'],
+      skills: ['React', 'JavaScript', 'Redux', 'Jest', 'Webpack'],
+      postedDate: dates.today, // Posted today
+      applyUrl: 'https://linkedin.com/jobs/search/?keywords=React%20Developer%20JavaScript%20Redux',
+      linkedinUrl: 'https://linkedin.com/company/innovatetech'
+    },
+    {
+      id: '7',
+      title: 'Python Developer',
+      company: 'DataInsights',
+      location: 'Boston, MA',
+      type: 'Full-time',
+      salary: '$95,000 - $135,000',
+      description: 'We are looking for a Python Developer to join our data science team. Work on machine learning projects and data analysis.',
+      requirements: ['3+ years experience', 'Python', 'Django', 'SQL', 'Data analysis'],
+      skills: ['Python', 'Django', 'SQL', 'Pandas', 'NumPy'],
+      postedDate: dates.twoDaysAgo, // Posted 2 days ago
+      applyUrl: 'https://linkedin.com/jobs/search/?keywords=Python%20Developer%20Django%20Data%20Analysis',
+      linkedinUrl: 'https://linkedin.com/company/datainsights'
     }
   ]
 }
@@ -232,13 +281,22 @@ export async function POST(request: NextRequest) {
       jobs = getMockJobs()
     }
 
-    // Always return jobs - don't filter too strictly
-    let filteredJobs = [...jobs]
+    // Filter jobs posted within the last week
+    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    let filteredJobs = jobs.filter(job => {
+      const jobDate = new Date(job.postedDate)
+      return jobDate >= oneWeekAgo
+    })
+
+    // If no recent jobs found, include all jobs but prioritize recent ones
+    if (filteredJobs.length === 0) {
+      filteredJobs = [...jobs]
+    }
 
     // If we have skills, try to match them, but don't exclude jobs completely
     if (skills && skills.length > 0) {
       // Score jobs based on skill matches
-      filteredJobs = jobs.map(job => {
+      filteredJobs = filteredJobs.map(job => {
         const matchingSkills = job.skills.filter(skill => 
           skills.some((userSkill: string) => 
             skill.toLowerCase().includes(userSkill.toLowerCase()) ||
@@ -284,6 +342,10 @@ export async function POST(request: NextRequest) {
         experience,
         location,
         jobTitle
+      },
+      filters: {
+        dateRange: 'Last 7 days',
+        recentJobsOnly: true
       },
       source: jobs.length > 0 && jobs[0].id.startsWith('linkedin-') ? 'linkedin' : 'mock'
     })
