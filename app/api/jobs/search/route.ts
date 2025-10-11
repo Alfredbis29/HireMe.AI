@@ -142,7 +142,7 @@ function getMockJobs(): JobListing[] {
       requirements: ['5+ years experience', 'JavaScript', 'React', 'Node.js', 'Leadership skills'],
       skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'AWS'],
       postedDate: '2024-01-15',
-      applyUrl: 'https://linkedin.com/jobs/view/1234567890',
+      applyUrl: 'https://linkedin.com/jobs/search/?keywords=Senior%20Software%20Engineer%20JavaScript%20React',
       linkedinUrl: 'https://linkedin.com/company/techcorp'
     },
     {
@@ -156,7 +156,7 @@ function getMockJobs(): JobListing[] {
       requirements: ['3+ years experience', 'JavaScript', 'React', 'Python', 'Database design'],
       skills: ['JavaScript', 'React', 'Python', 'PostgreSQL', 'Docker'],
       postedDate: '2024-01-14',
-      applyUrl: 'https://linkedin.com/jobs/view/1234567891',
+      applyUrl: 'https://linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer%20JavaScript%20React%20Python',
       linkedinUrl: 'https://linkedin.com/company/startupxyz'
     },
     {
@@ -170,7 +170,7 @@ function getMockJobs(): JobListing[] {
       requirements: ['2+ years experience', 'React', 'TypeScript', 'CSS', 'UI/UX design'],
       skills: ['React', 'TypeScript', 'CSS', 'Figma', 'Responsive Design'],
       postedDate: '2024-01-13',
-      applyUrl: 'https://linkedin.com/jobs/view/1234567892',
+      applyUrl: 'https://linkedin.com/jobs/search/?keywords=Frontend%20Developer%20React%20TypeScript',
       linkedinUrl: 'https://linkedin.com/company/designstudio'
     },
     {
@@ -184,7 +184,7 @@ function getMockJobs(): JobListing[] {
       requirements: ['4+ years experience', 'Node.js', 'Python', 'Database optimization', 'API design'],
       skills: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'Docker'],
       postedDate: '2024-01-12',
-      applyUrl: 'https://linkedin.com/jobs/view/1234567893',
+      applyUrl: 'https://linkedin.com/jobs/search/?keywords=Backend%20Developer%20Node.js%20Python',
       linkedinUrl: 'https://linkedin.com/company/dataflow'
     },
     {
@@ -198,7 +198,7 @@ function getMockJobs(): JobListing[] {
       requirements: ['3+ years experience', 'AWS', 'Docker', 'Kubernetes', 'CI/CD'],
       skills: ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'Jenkins'],
       postedDate: '2024-01-11',
-      applyUrl: 'https://linkedin.com/jobs/view/1234567894',
+      applyUrl: 'https://linkedin.com/jobs/search/?keywords=DevOps%20Engineer%20AWS%20Docker%20Kubernetes',
       linkedinUrl: 'https://linkedin.com/company/cloudscale'
     }
   ]

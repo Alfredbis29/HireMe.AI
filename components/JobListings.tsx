@@ -121,7 +121,14 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
   }
 
   const handleApply = (job: JobListing) => {
-    window.open(job.applyUrl, '_blank')
+    // Check if it's a LinkedIn search URL or direct job URL
+    if (job.applyUrl.includes('linkedin.com/jobs/search')) {
+      // For search URLs, open LinkedIn job search with the keywords
+      window.open(job.applyUrl, '_blank')
+    } else {
+      // For direct job URLs, open the specific job
+      window.open(job.applyUrl, '_blank')
+    }
   }
 
   const handleLinkedIn = (job: JobListing) => {
@@ -283,7 +290,7 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
                     className="flex-1"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    Apply on LinkedIn
+                    Search Similar Jobs
                   </Button>
                   <Button
                     variant="outline"
@@ -291,8 +298,16 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
                     className="flex-1"
                   >
                     <Linkedin className="h-4 w-4 mr-2" />
-                    View Company
+                    Browse LinkedIn Jobs
                   </Button>
+                </div>
+                
+                {/* Info Message */}
+                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                  <p className="text-sm text-blue-700">
+                    💡 <strong>Tip:</strong> This will open LinkedIn job search with relevant keywords. 
+                    You can then apply to real job postings that match your skills!
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -302,9 +317,27 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
 
       {/* Footer */}
       <div className="text-center pt-6 border-t">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 mb-4">
           💡 <strong>Pro Tip:</strong> Keep your LinkedIn profile updated and active to increase your chances of being noticed by recruiters!
         </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            variant="outline" 
+            onClick={() => window.open('https://linkedin.com/jobs', '_blank')}
+            className="text-sm"
+          >
+            <Linkedin className="h-4 w-4 mr-2" />
+            Browse All LinkedIn Jobs
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => window.open('https://linkedin.com/feed', '_blank')}
+            className="text-sm"
+          >
+            <Linkedin className="h-4 w-4 mr-2" />
+            Update Your LinkedIn Profile
+          </Button>
+        </div>
       </div>
     </div>
   )
