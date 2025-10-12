@@ -47,29 +47,39 @@ export const saveUsers = (users: User[]) => {
 
 // Create a new user
 export const createUser = async (email: string, password: string, name: string): Promise<User> => {
-  const users = getUsers()
-  
-  // Check if user already exists
-  if (users.find(user => user.email === email)) {
-    throw new Error('User already exists')
-  }
+  try {
+    console.log('📁 Local DB: Creating user:', { email, name })
+    const users = getUsers()
+    console.log('📁 Local DB: Current users count:', users.length)
+    
+    // Check if user already exists
+    if (users.find(user => user.email === email)) {
+      console.log('❌ Local DB: User already exists')
+      throw new Error('User already exists')
+    }
 
-  // Hash password
-  const hashedPassword = await bcrypt.hash(password, 12)
-  
-  const newUser: User = {
-    id: Date.now().toString(),
-    email,
-    password: hashedPassword,
-    name,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12)
+    
+    const newUser: User = {
+      id: Date.now().toString(),
+      email,
+      password: hashedPassword,
+      name,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
 
-  users.push(newUser)
-  saveUsers(users)
-  
-  return newUser
+    users.push(newUser)
+    console.log('📁 Local DB: Saving users, new count:', users.length)
+    saveUsers(users)
+    console.log('✅ Local DB: User created successfully:', newUser.id)
+    
+    return newUser
+  } catch (error) {
+    console.error('❌ Local DB: Error creating user:', error)
+    throw error
+  }
 }
 
 // Find user by email

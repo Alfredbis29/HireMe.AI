@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Registration error:', error)
+    console.error('❌ Registration error:', error)
     
     if (error instanceof Error && error.message === 'User already exists') {
       return NextResponse.json(
@@ -51,8 +51,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Return the actual error message for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create user'
+    console.error('❌ Registration failed:', errorMessage)
+    
     return NextResponse.json(
-      { error: 'Failed to create user' },
+      { error: errorMessage },
       { status: 500 }
     )
   }

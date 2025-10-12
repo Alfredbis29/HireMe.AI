@@ -24,34 +24,47 @@ const isMongoAvailable = async (): Promise<boolean> => {
 
 // Create a new user
 export const createUser = async (email: string, password: string, name: string): Promise<User> => {
-  if (await isMongoAvailable()) {
-    // Use MongoDB
-    const db = await getDatabase()
-    const users = db.collection('users')
+  try {
+    console.log('🔍 Attempting to create user:', { email, name })
     
-    // Check if user already exists
-    const existingUser = await users.findOne({ email })
-    if (existingUser) {
-      throw new Error('User already exists')
-    }
+    if (await isMongoAvailable()) {
+      console.log('📊 Using MongoDB for user creation')
+      // Use MongoDB
+      const db = await getDatabase()
+      const users = db.collection('users')
+      
+      // Check if user already exists
+      const existingUser = await users.findOne({ email })
+      if (existingUser) {
+        console.log('❌ User already exists in MongoDB')
+        throw new Error('User already exists')
+      }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12)
-    
-    const newUser: User = {
-      id: Date.now().toString(),
-      email,
-      password: hashedPassword,
-      name,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 12)
+      
+      const newUser: User = {
+        id: Date.now().toString(),
+        email,
+        password: hashedPassword,
+        name,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
 
-    await users.insertOne(newUser)
-    return newUser
-  } else {
-    // Use local JSON database
-    return await localDb.createUser(email, password, name)
+      const result = await users.insertOne(newUser)
+      console.log('✅ User created in MongoDB:', result.insertedId)
+      return newUser
+    } else {
+      console.log('📁 Using local JSON database for user creation')
+      // Use local JSON database
+      const result = await localDb.createUser(email, password, name)
+      console.log('✅ User created in local database:', result.id)
+      return result
+    }
+  } catch (error) {
+    console.error('❌ Error in createUser:', error)
+    throw error
   }
 }
 
