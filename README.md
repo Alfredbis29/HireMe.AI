@@ -274,7 +274,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ❤️ by the HireMe.AI Team**
+**Made with ❤️ by the Alpha Team**
 
 [⭐ Star this repo](https://github.com/Alfredbis29/HireMe.AI) • [🐛 Report Bug](https://github.com/Alfredbis29/HireMe.AI/issues) • [💡 Request Feature](https://github.com/Alfredbis29/HireMe.AI/issues)
 
