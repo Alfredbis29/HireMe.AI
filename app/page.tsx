@@ -36,16 +36,32 @@ export default function Home() {
             and career optimization suggestions to land your dream job.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/upload">
+            <Link href="/signup">
               <Button size="lg" className="text-lg px-8 py-6">
-                Upload Resume
+                Get Started Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6">
-              Learn More
-            </Button>
+            <Link href="/login">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent font-semibold"
+                data-signin="true"
+                style={{ 
+                  display: 'inline-flex',
+                  visibility: 'visible',
+                  opacity: '1',
+                  pointerEvents: 'auto'
+                }}
+              >
+                Sign In
+              </Button>
+            </Link>
           </div>
+          <p className="text-sm text-gray-500 mt-4">
+            🔒 Secure authentication required for resume upload and analysis
+          </p>
         </div>
       </section>
 

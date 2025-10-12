@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth'
 
 interface ResumeAnalysisResponse {
   overallScore: number
@@ -35,6 +37,18 @@ interface ResumeAnalysisResponse {
 export async function POST(request: NextRequest) {
   try {
     console.log('📤 Upload API called')
+    
+    // Check authentication
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      console.log('❌ Upload API: No valid session found')
+      return NextResponse.json(
+        { error: 'Authentication required. Please sign in to upload files.' },
+        { status: 401 }
+      )
+    }
+    
+    console.log('✅ Upload API: User authenticated:', session.user.email)
     
     // Check content type
     const contentType = request.headers.get('content-type') || ''

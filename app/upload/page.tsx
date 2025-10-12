@@ -43,32 +43,60 @@ export default function UploadPage() {
   if (status === 'unauthenticated') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="mb-6">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Brain className="h-8 w-8 text-blue-600" />
+        <div className="text-center max-w-lg mx-auto p-6">
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Brain className="h-10 w-10 text-blue-600" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Account Required
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              🔒 Authentication Required
             </h1>
-            <p className="text-gray-600 mb-6">
-              Please create an account to upload and analyze your resume
+            <p className="text-lg text-gray-600 mb-2">
+              To upload and analyze your resume, you need to be signed in.
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              This ensures your data is secure and personalized to your account.
             </p>
           </div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              What you&apos;ll get with an account:
+            </h3>
+            <div className="space-y-3 text-left">
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">AI-powered resume analysis</p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Personalized job recommendations</p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Career optimization tips</p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Secure data storage</p>
+              </div>
+            </div>
+          </div>
+          
           <div className="space-y-4">
             <Link href="/signup">
-              <Button size="lg" className="w-full">
-                Create Free Account
+              <Button size="lg" className="w-full text-lg py-6">
+                🚀 Create Free Account
               </Button>
             </Link>
             <Link href="/login">
-              <Button variant="outline" size="lg" className="w-full">
-                Already have an account? Sign In
+              <Button variant="outline" size="lg" className="w-full text-lg py-6">
+                🔑 Already have an account? Sign In
               </Button>
             </Link>
             <Link href="/">
-              <Button variant="outline" className="w-full">
-                Back to Home
+              <Button variant="ghost" className="w-full">
+                ← Back to Home
               </Button>
             </Link>
           </div>
@@ -140,6 +168,12 @@ export default function UploadPage() {
       })
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Authentication failed - redirect to login
+          alert('Your session has expired. Please sign in again.')
+          router.push('/login')
+          return
+        }
         throw new Error('Upload failed')
       }
 
