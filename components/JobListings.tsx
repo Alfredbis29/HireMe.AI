@@ -28,6 +28,7 @@ interface JobListing {
   postedDate: string
   applyUrl: string
   linkedinUrl: string
+  matchScore?: number
 }
 
 interface JobListingsProps {

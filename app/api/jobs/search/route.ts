@@ -13,6 +13,7 @@ interface JobListing {
   postedDate: string
   applyUrl: string
   linkedinUrl: string
+  matchScore?: number
 }
 
 interface LinkedInJobSearchParams {
@@ -315,7 +316,7 @@ export async function POST(request: NextRequest) {
       })
 
       // Sort by match score, but include all jobs
-      filteredJobs.sort((a, b) => b.matchScore - a.matchScore)
+      filteredJobs.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
     }
 
     // If we have a job title preference, boost those jobs
