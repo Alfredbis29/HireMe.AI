@@ -54,18 +54,32 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
+      console.log('🔑 JWT Callback:', { token, account, profile, user })
+      
       if (account && profile) {
         token.accessToken = account.access_token
         token.id = profile.sub
       }
+      
+      if (user) {
+        token.id = user.id
+        token.email = user.email
+        token.name = user.name
+      }
+      
+      console.log('🔑 JWT Token updated:', token)
       return token
     },
     async session({ session, token }) {
+      console.log('📊 Session Callback:', { session, token })
+      
       if (token && session.user) {
         session.user.id = token.id as string
         session.accessToken = token.accessToken as string
       }
+      
+      console.log('📊 Session updated:', session)
       return session
     },
   },
@@ -75,6 +89,10 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
 }
