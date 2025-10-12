@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import JobListings from '@/components/JobListings'
 import { ArrowLeft, Brain, CheckCircle, FileText, Target, TrendingUp, Users, Zap } from 'lucide-react'
 
 interface AnalysisResult {
@@ -352,15 +353,38 @@ export default function ResultsPage() {
             </CardContent>
           </Card>
 
-          {/* Job Matches */}
+          {/* LinkedIn Job Suggestions */}
           <Card className="border-0 shadow-lg mb-8">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Users className="mr-2 h-5 w-5" />
-                Recommended Job Opportunities
+                LinkedIn Job Opportunities
               </CardTitle>
               <CardDescription>
-                Jobs that match your profile and skills
+                Real job postings from LinkedIn that match your profile and skills
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <JobListings 
+                skills={analysis.skills}
+                experience={analysis.experience}
+                onJobClick={(job) => {
+                  console.log('Job clicked:', job)
+                  // You can add additional logic here if needed
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Traditional Job Matches (Fallback) */}
+          <Card className="border-0 shadow-lg mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Users className="mr-2 h-5 w-5" />
+                Additional Job Matches
+              </CardTitle>
+              <CardDescription>
+                More opportunities that align with your profile
               </CardDescription>
             </CardHeader>
             <CardContent>
