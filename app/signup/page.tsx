@@ -196,6 +196,7 @@ export default function SignUpPage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Enter your email"
+                  autoComplete="email"
                   required
                 />
               </div>
@@ -210,6 +211,7 @@ export default function SignUpPage() {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Enter your password"
+                    autoComplete="new-password"
                     required
                   />
                   <Button
@@ -237,6 +239,7 @@ export default function SignUpPage() {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   placeholder="Confirm your password"
+                  autoComplete="new-password"
                   required
                 />
               </div>

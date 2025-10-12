@@ -120,6 +120,7 @@ export default function LoginPage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="Enter your email"
+                  autoComplete="email"
                   required
                 />
               </div>
@@ -134,6 +135,7 @@ export default function LoginPage() {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Enter your password"
+                    autoComplete="current-password"
                     required
                   />
                   <Button
