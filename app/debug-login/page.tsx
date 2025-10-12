@@ -48,7 +48,7 @@ export default function DebugLoginPage() {
       // Wait a moment for session to update
       setTimeout(() => {
         console.log('⏰ Session after delay:', session)
-        setDebugInfo(prev => ({
+        setDebugInfo((prev: any) => ({
           ...prev,
           sessionAfterDelay: session,
           statusAfterDelay: status
@@ -70,7 +70,7 @@ export default function DebugLoginPage() {
     try {
       const response = await fetch('/api/test-session')
       const data = await response.json()
-      setDebugInfo(prev => ({
+      setDebugInfo((prev: any) => ({
         ...prev,
         sessionAPIResponse: data
       }))
@@ -85,7 +85,7 @@ export default function DebugLoginPage() {
         method: 'POST'
       })
       const data = await response.json()
-      setDebugInfo(prev => ({
+      setDebugInfo((prev: any) => ({
         ...prev,
         testUserCreation: data
       }))

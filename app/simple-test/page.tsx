@@ -28,7 +28,7 @@ export default function SimpleTestPage() {
       setResult(result)
     } catch (error) {
       console.error('❌ Login error:', error)
-      setResult({ error: error.message })
+      setResult({ error: error instanceof Error ? error.message : 'Unknown error' })
     }
   }
 
