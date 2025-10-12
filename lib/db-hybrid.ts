@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs'
 import { getDatabase } from './mongodb'
 import * as localDb from './db'
 import * as memoryDb from './db-memory'
+import * as persistentDb from './db-persistent'
 
 export interface User {
   id: string
@@ -71,12 +72,21 @@ export const createUser = async (email: string, password: string, name: string):
         console.log('✅ User created in local database:', result.id)
         return result
       } catch (localError) {
-        console.log('❌ Local database failed, using memory database:', localError)
-        console.log('🧠 Using memory database for user creation')
-        // Fallback to memory database
-        const result = await memoryDb.createUser(email, password, name)
-        console.log('✅ User created in memory database:', result.id)
-        return result
+        console.log('❌ Local database failed, trying memory database:', localError)
+        try {
+          console.log('🧠 Using memory database for user creation')
+          // Try memory database first
+          const result = await memoryDb.createUser(email, password, name)
+          console.log('✅ User created in memory database:', result.id)
+          return result
+        } catch (memoryError) {
+          console.log('❌ Memory database failed, using persistent database:', memoryError)
+          console.log('💾 Using persistent database for user creation')
+          // Final fallback to persistent database
+          const result = await persistentDb.createUser(email, password, name)
+          console.log('✅ User created in persistent database:', result.id)
+          return result
+        }
       }
     }
   } catch (error) {
@@ -98,9 +108,15 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
       // Try local JSON database first
       return localDb.findUserByEmail(email)
     } catch (error) {
-      console.log('❌ Local database failed for findUserByEmail, using memory database')
-      // Fallback to memory database
-      return await memoryDb.findUserByEmail(email)
+      console.log('❌ Local database failed for findUserByEmail, trying memory database')
+      try {
+        // Try memory database first
+        return await memoryDb.findUserByEmail(email)
+      } catch (memoryError) {
+        console.log('❌ Memory database failed for findUserByEmail, using persistent database')
+        // Final fallback to persistent database
+        return await persistentDb.findUserByEmail(email)
+      }
     }
   }
 }
@@ -118,9 +134,15 @@ export const findUserById = async (id: string): Promise<User | null> => {
       // Try local JSON database first
       return localDb.findUserById(id)
     } catch (error) {
-      console.log('❌ Local database failed for findUserById, using memory database')
-      // Fallback to memory database
-      return await memoryDb.findUserById(id)
+      console.log('❌ Local database failed for findUserById, trying memory database')
+      try {
+        // Try memory database first
+        return await memoryDb.findUserById(id)
+      } catch (memoryError) {
+        console.log('❌ Memory database failed for findUserById, using persistent database')
+        // Final fallback to persistent database
+        return await persistentDb.findUserById(id)
+      }
     }
   }
 }
