@@ -165,7 +165,18 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/login">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-blue-600">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent font-semibold"
+                data-signin="true"
+                style={{ 
+                  display: 'inline-flex',
+                  visibility: 'visible',
+                  opacity: '1',
+                  pointerEvents: 'auto'
+                }}
+              >
                 Sign In
               </Button>
             </Link>
