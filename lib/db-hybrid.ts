@@ -13,6 +13,9 @@ export interface User {
 
 // Check if MongoDB is available
 const isMongoAvailable = async (): Promise<boolean> => {
+  // Force local database for now (remove this line to enable MongoDB)
+  return false
+  
   try {
     await getDatabase()
     return true
