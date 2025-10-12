@@ -30,25 +30,15 @@ export default function InjectedContentBlocker() {
         })
       })
 
-      // Hide any buttons that might contain sign-in text
-      const allButtons = document.querySelectorAll('button')
-      allButtons.forEach(button => {
-        const buttonText = button.textContent?.toLowerCase() || ''
-        if (buttonText.includes('sign in') || 
-            buttonText.includes('signin') || 
-            buttonText.includes('login') ||
-            buttonText.includes('log in')) {
-          // Check if it's not one of our legitimate buttons
-          const isOurButton = button.closest('[data-our-app="true"]')
-          if (!isOurButton) {
-            const htmlButton = button as HTMLElement
-            htmlButton.style.display = 'none'
-            htmlButton.style.visibility = 'hidden'
-            htmlButton.style.opacity = '0'
-            htmlButton.style.pointerEvents = 'none'
-            htmlButton.classList.add('hide-injected-elements')
-          }
-        }
+      // Only hide buttons that are clearly from unwanted sources
+      const unwantedButtons = document.querySelectorAll('button[class*="careerflow"], button[class*="Signintoviewdetails"], button[class*="youAreOneStepAwayFrom"]')
+      unwantedButtons.forEach(button => {
+        const htmlButton = button as HTMLElement
+        htmlButton.style.display = 'none'
+        htmlButton.style.visibility = 'hidden'
+        htmlButton.style.opacity = '0'
+        htmlButton.style.pointerEvents = 'none'
+        htmlButton.classList.add('hide-injected-elements')
       })
     }
 
@@ -85,24 +75,15 @@ export default function InjectedContentBlocker() {
                 }
               })
 
-              // Check for buttons with sign-in text
-              const buttons = element.querySelectorAll('button')
-              buttons.forEach(button => {
-                const buttonText = button.textContent?.toLowerCase() || ''
-                if (buttonText.includes('sign in') || 
-                    buttonText.includes('signin') || 
-                    buttonText.includes('login') ||
-                    buttonText.includes('log in')) {
-                  const isOurButton = button.closest('[data-our-app="true"]')
-                  if (!isOurButton) {
-                    const htmlButton = button as HTMLElement
-                    htmlButton.style.display = 'none'
-                    htmlButton.style.visibility = 'hidden'
-                    htmlButton.style.opacity = '0'
-                    htmlButton.style.pointerEvents = 'none'
-                    htmlButton.classList.add('hide-injected-elements')
-                  }
-                }
+              // Check for buttons from unwanted sources
+              const unwantedButtons = element.querySelectorAll('button[class*="careerflow"], button[class*="Signintoviewdetails"], button[class*="youAreOneStepAwayFrom"]')
+              unwantedButtons.forEach(button => {
+                const htmlButton = button as HTMLElement
+                htmlButton.style.display = 'none'
+                htmlButton.style.visibility = 'hidden'
+                htmlButton.style.opacity = '0'
+                htmlButton.style.pointerEvents = 'none'
+                htmlButton.classList.add('hide-injected-elements')
               })
             }
           })

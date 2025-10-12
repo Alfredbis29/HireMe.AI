@@ -28,14 +28,14 @@ export default function UserProfile() {
 
   if (!session) {
     return (
-      <div className="flex items-center space-x-4" data-our-app="true">
+      <div className="flex items-center space-x-4">
         <Link href="/login">
-          <Button variant="outline" size="sm" data-our-app="true">
+          <Button variant="outline" size="sm">
             Sign In
           </Button>
         </Link>
         <Link href="/login">
-          <Button size="sm" data-our-app="true">
+          <Button size="sm">
             Get Started
           </Button>
         </Link>

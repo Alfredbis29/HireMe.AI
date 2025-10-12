@@ -157,15 +157,15 @@ export default function Home() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join thousands of professionals who have already optimized their resumes with AI. Create your free account to get started.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center" data-our-app="true">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/signup">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-6" data-our-app="true">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
                 Create Free Account
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link href="/login">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-blue-600" data-our-app="true">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-blue-600">
                 Sign In
               </Button>
             </Link>

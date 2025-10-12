@@ -2,78 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide any unwanted injected content */
+/* Only hide specific unwanted injected content, not all sign-in buttons */
 [class*="careerflow"],
 [class*="Signintoviewdetails"],
-[class*="youAreOneStepAwayFrom"],
-[class*="careerflow"] *,
-[class*="Signintoviewdetails"] *,
-[class*="youAreOneStepAwayFrom"] * {
+[class*="youAreOneStepAwayFrom"] {
   display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
 
 /* Hide any third-party widgets that might be injected */
-div[style*="position: fixed"][style*="bottom"],
-div[style*="position: fixed"][style*="bottom"] * {
+div[style*="position: fixed"][style*="bottom"] {
   display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* Hide any floating or overlay elements that might contain sign-in buttons */
-[class*="floating"],
-[class*="overlay"],
-[class*="popup"],
-[class*="modal"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* Ensure no hidden sign-in buttons appear on hover */
-*:hover [class*="careerflow"],
-*:hover [class*="Signintoviewdetails"],
-*:hover [class*="youAreOneStepAwayFrom"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-/* Additional protection against hidden buttons */
-button[style*="display: none"],
-button[style*="visibility: hidden"],
-button[style*="opacity: 0"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* Hide any elements that might contain sign-in text */
-[data-text*="Sign in"],
-[data-text*="Sign In"],
-[data-text*="Login"],
-[data-text*="Log in"],
-[title*="Sign in"],
-[title*="Sign In"],
-[title*="Login"],
-[title*="Log in"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-/* JavaScript-based protection against injected elements */
-.hide-injected-elements {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
 
 @layer base {
