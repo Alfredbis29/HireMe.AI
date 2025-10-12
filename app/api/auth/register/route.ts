@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createUser } from '@/lib/db'
+import { createUser } from '@/lib/db-hybrid'
 
 export async function POST(request: NextRequest) {
   try {
