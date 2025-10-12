@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { NextAuthOptions } from 'next-auth'
-import { findUserByEmail, verifyPassword } from '@/lib/db'
+import { findUserByEmail, verifyPassword } from '@/lib/db-hybrid'
 
 const authOptions: NextAuthOptions = {
   providers: [
