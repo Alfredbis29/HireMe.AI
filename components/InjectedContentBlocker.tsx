@@ -6,6 +6,16 @@ export default function InjectedContentBlocker() {
   useEffect(() => {
     // Function to hide unwanted injected content
     const hideInjectedContent = () => {
+      // First, ensure all legitimate sign-in buttons are visible
+      const legitimateSignInButtons = document.querySelectorAll('a[href*="/login"] button, button[data-signin="true"]')
+      legitimateSignInButtons.forEach(button => {
+        const htmlButton = button as HTMLElement
+        htmlButton.style.display = 'inline-flex'
+        htmlButton.style.visibility = 'visible'
+        htmlButton.style.opacity = '1'
+        htmlButton.style.pointerEvents = 'auto'
+      })
+
       // Hide elements with specific class names
       const unwantedSelectors = [
         '[class*="careerflow"]',
