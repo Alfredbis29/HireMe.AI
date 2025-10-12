@@ -43,6 +43,10 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
     const fetchJobs = async () => {
       try {
         setLoading(true)
+        // Add timeout to prevent hanging
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+        
         const response = await fetch('/api/jobs/search', {
           method: 'POST',
           headers: {
@@ -53,7 +57,10 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
             experience: experience.years,
             jobTitle: experience.level
           }),
+          signal: controller.signal
         })
+        
+        clearTimeout(timeoutId)
 
         if (!response.ok) {
           throw new Error('Failed to fetch jobs')
@@ -64,6 +71,14 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
         setSearchInfo(data)
       } catch (error) {
         console.error('Error fetching jobs:', error)
+        
+        // Handle timeout specifically
+        if (error instanceof Error && error.name === 'AbortError') {
+          setError('Request timed out. Showing fallback jobs...')
+        } else {
+          setError('Failed to fetch jobs. Showing fallback jobs...')
+        }
+        
         // Fallback: show some default jobs even if API fails
         const fallbackJobs = [
           {
@@ -135,6 +150,7 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Finding relevant job opportunities...</p>
+          <p className="text-sm text-gray-500 mt-2">This may take a few seconds...</p>
         </div>
       </div>
     )
@@ -149,6 +165,13 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
         <p className="text-gray-600 mb-4">
           Based on your skills and experience, here are the best opportunities
         </p>
+        
+        {/* Error Message */}
+        {error && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 mb-4">
+            <p className="text-sm text-yellow-700">{error}</p>
+          </div>
+        )}
         
         {/* Date Filter Info */}
         {searchInfo.filters?.recentJobsOnly && (

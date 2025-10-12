@@ -29,8 +29,8 @@ async function fetchLinkedInJobs(params: {
     // In a real implementation, you would integrate with LinkedIn's Job Search API
     console.log('🔍 Fetching LinkedIn jobs with params:', params)
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500))
+    // Simulate API delay (reduced from 500ms to 100ms)
+    await new Promise(resolve => setTimeout(resolve, 100))
     
     // Generate realistic job postings based on skills
     const mockJobs: JobListing[] = [
