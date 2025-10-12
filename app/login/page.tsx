@@ -205,7 +205,7 @@ export default function LoginPage() {
             {/* Features */}
             <div className="pt-4 border-t">
               <h3 className="text-sm font-medium text-gray-900 mb-3">
-                What you'll get:
+                What you&apos;ll get:
               </h3>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-center">
@@ -228,7 +228,7 @@ export default function LoginPage() {
         {/* Sign Up Link */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-blue-600 hover:underline font-medium">
               Sign up here
             </Link>

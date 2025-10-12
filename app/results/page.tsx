@@ -454,7 +454,7 @@ export default function ResultsPage() {
                 </h2>
               </div>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Based on your resume analysis, we've found the perfect job matches for you. 
+                Based on your resume analysis, we&apos;ve found the perfect job matches for you. 
                 Apply directly on LinkedIn and take the next step in your career!
               </p>
             </div>

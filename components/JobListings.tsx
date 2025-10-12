@@ -166,7 +166,7 @@ export default function JobListings({ skills, experience, onJobClick }: JobListi
         <Briefcase className="h-12 w-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Finding Your Perfect Match...</h3>
         <p className="text-gray-600 mb-4">
-          We're searching for the best opportunities that match your profile. 
+          We&apos;re searching for the best opportunities that match your profile. 
           This may take a moment.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
