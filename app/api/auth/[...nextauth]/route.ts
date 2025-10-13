@@ -45,19 +45,49 @@ const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
+      console.log('🔑 JWT Callback:', { token, account, profile, user })
+      
       if (account && profile) {
         token.accessToken = account.access_token
-        token.id = profile.sub || ''
+        token.id = profile.sub || user?.id || ''
       }
+      
+      if (user) {
+        token.id = user.id
+        token.email = user.email
+        token.name = user.name
+      }
+      
+      console.log('🔑 JWT Token updated:', token)
       return token
     },
     async session({ session, token }) {
+      console.log('📊 Session Callback:', { session, token })
+      
       if (token && session.user) {
         session.user.id = token.id as string
         session.accessToken = token.accessToken as string
       }
+      
+      console.log('📊 Session updated:', session)
       return session
+    },
+    async redirect({ url, baseUrl }) {
+      console.log('🔄 Redirect Callback:', { url, baseUrl })
+      
+      // If url is relative, make it absolute
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`
+      }
+      
+      // If url is on the same origin, allow it
+      if (url.startsWith(baseUrl)) {
+        return url
+      }
+      
+      // Default redirect to home page
+      return baseUrl
     },
   },
   pages: {
@@ -66,8 +96,13 @@ const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
 }
 
 const handler = NextAuth(authOptions)

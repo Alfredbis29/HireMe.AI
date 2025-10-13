@@ -48,8 +48,12 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Invalid email or password')
       } else if (result?.ok) {
-        router.push('/')
-        router.refresh()
+        console.log('✅ Login successful, redirecting to home page...')
+        // Small delay to ensure session is established
+        setTimeout(() => {
+          router.push('/')
+          router.refresh()
+        }, 100)
       }
     } catch (error) {
       console.error('Sign in error:', error)
@@ -72,8 +76,12 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Failed to sign in with Google. Please try again.')
       } else if (result?.ok) {
-        router.push('/')
-        router.refresh()
+        console.log('✅ Google login successful, redirecting to home page...')
+        // Small delay to ensure session is established
+        setTimeout(() => {
+          router.push('/')
+          router.refresh()
+        }, 100)
       }
     } catch (error) {
       console.error('Sign in error:', error)
