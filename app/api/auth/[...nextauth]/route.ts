@@ -22,23 +22,32 @@ const authOptions: NextAuthOptions = {
         }
 
         try {
-          const user = findUserByEmail(credentials.email)
+          console.log('🔍 Auth: Looking for user:', credentials.email)
+          const user = await findUserByEmail(credentials.email)
+          console.log('👤 Auth: User found:', user ? 'Yes' : 'No')
+          
           if (!user) {
+            console.log('❌ Auth: User not found')
             return null
           }
 
+          console.log('🔐 Auth: Verifying password...')
           const isValidPassword = await verifyPassword(credentials.password, user.password)
+          console.log('🔐 Auth: Password valid:', isValidPassword)
+          
           if (!isValidPassword) {
+            console.log('❌ Auth: Invalid password')
             return null
           }
 
+          console.log('✅ Auth: Authentication successful for:', user.email)
           return {
             id: user.id,
             email: user.email,
             name: user.name,
           }
         } catch (error) {
-          console.error('Auth error:', error)
+          console.error('❌ Auth error:', error)
           return null
         }
       }
