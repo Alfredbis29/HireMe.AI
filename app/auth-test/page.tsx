@@ -63,7 +63,7 @@ export default function AuthTestPage() {
       const newSession = await getSession()
       console.log('📊 Updated session:', newSession)
       
-      setTestResult(prev => ({
+      setTestResult((prev: any) => ({
         ...prev,
         forcedUpdate: newSession
       }))
@@ -76,7 +76,7 @@ export default function AuthTestPage() {
     try {
       const response = await fetch('/api/test-auth-flow')
       const data = await response.json()
-      setTestResult(prev => ({
+      setTestResult((prev: any) => ({
         ...prev,
         authFlowTest: data
       }))
