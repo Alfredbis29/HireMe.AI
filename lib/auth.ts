@@ -49,7 +49,6 @@ export const authOptions: NextAuthOptions = {
         // Google OAuth path
         token.accessToken = account.access_token
         // Prefer profile.sub, else credentials user.id
-        // @ts-expect-error id augmentation
         token.id = (profile as any)?.sub || user?.id || token.id
       }
       if (user) {
