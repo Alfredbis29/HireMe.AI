@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Clean configuration for Next.js 14
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Ensure bcryptjs is properly handled on the server side
+      config.externals = config.externals || []
+      config.externals.push('bcryptjs')
+    }
+    return config
+  },
   async headers() {
     return [
       {
