@@ -47,7 +47,6 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, account, profile, user }) {
       if (account && profile) {
         // Google OAuth path
-        // @ts-expect-error access_token not in types
         token.accessToken = account.access_token
         // Prefer profile.sub, else credentials user.id
         // @ts-expect-error id augmentation
