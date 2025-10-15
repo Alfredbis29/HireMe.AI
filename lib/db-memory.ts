@@ -37,7 +37,6 @@ export const createUser = async (email: string, password: string, name: string):
 
     users.push(newUser)
     console.log('✅ Memory DB: User created successfully:', newUser.id)
-    console.log('📊 Memory DB: Total users:', users.length)
     
     return newUser
   } catch (error) {
@@ -47,16 +46,18 @@ export const createUser = async (email: string, password: string, name: string):
 }
 
 // Find user by email
-export const findUserByEmail = async (email: string): Promise<User | null> => {
+export const findUserByEmail = (email: string): User | null => {
+  console.log('🧠 Memory DB: Looking for user:', email)
   const user = users.find(user => user.email === email)
-  console.log('🧠 Memory DB: Finding user by email:', email, user ? 'found' : 'not found')
+  console.log('🧠 Memory DB: User found:', user ? 'Yes' : 'No')
   return user || null
 }
 
 // Find user by ID
-export const findUserById = async (id: string): Promise<User | null> => {
+export const findUserById = (id: string): User | null => {
+  console.log('🧠 Memory DB: Looking for user by ID:', id)
   const user = users.find(user => user.id === id)
-  console.log('🧠 Memory DB: Finding user by ID:', id, user ? 'found' : 'not found')
+  console.log('🧠 Memory DB: User found by ID:', user ? 'Yes' : 'No')
   return user || null
 }
 

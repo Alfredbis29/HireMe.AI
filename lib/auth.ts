@@ -5,10 +5,14 @@ import { findUserByEmail, verifyPassword } from '@/lib/db-hybrid'
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          }),
+        ]
+      : []),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -17,7 +21,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          console.log('❌ Auth: Missing credentials')
           return null
         }
 
@@ -25,27 +28,14 @@ export const authOptions: NextAuthOptions = {
           console.log('🔍 Auth: Looking for user:', credentials.email)
           const user = await findUserByEmail(credentials.email)
           console.log('👤 Auth: User found:', user ? 'Yes' : 'No')
-          
-          if (!user) {
-            console.log('❌ Auth: User not found')
-            return null
-          }
+          if (!user) return null
 
           console.log('🔐 Auth: Verifying password...')
           const isValidPassword = await verifyPassword(credentials.password, user.password)
-          console.log('🔐 Auth: Password valid:', isValidPassword)
-          
-          if (!isValidPassword) {
-            console.log('❌ Auth: Invalid password')
-            return null
-          }
+          if (!isValidPassword) return null
 
           console.log('✅ Auth: Authentication successful for:', user.email)
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-          }
+          return { id: user.id, email: user.email, name: user.name }
         } catch (error) {
           console.error('❌ Auth error:', error)
           return null
@@ -55,45 +45,48 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, profile, user }) {
-      console.log('🔑 JWT Callback:', { token, account, profile, user })
-      
       if (account && profile) {
+        // Google OAuth path
+        // @ts-expect-error access_token not in types
         token.accessToken = account.access_token
-        token.id = profile.sub
+        // Prefer profile.sub, else credentials user.id
+        // @ts-expect-error id augmentation
+        token.id = (profile as any)?.sub || user?.id || token.id
       }
-      
       if (user) {
+        // Credentials path
+        // @ts-expect-error id/email/name augmentation
         token.id = user.id
+        // @ts-expect-error id/email/name augmentation
         token.email = user.email
+        // @ts-expect-error id/email/name augmentation
         token.name = user.name
       }
-      
-      console.log('🔑 JWT Token updated:', token)
       return token
     },
     async session({ session, token }) {
-      console.log('📊 Session Callback:', { session, token })
-      
-      if (token && session.user) {
+      if (session.user) {
+        // @ts-expect-error augment
         session.user.id = token.id as string
-        session.accessToken = token.accessToken as string
+        // @ts-expect-error augment
+        session.accessToken = (token as any).accessToken as string
       }
-      
-      console.log('📊 Session updated:', session)
       return session
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith('/')) return `${baseUrl}${url}`
+      if (url.startsWith(baseUrl)) return url
+      return baseUrl
     },
   },
   pages: {
     signIn: '/login',
     error: '/login',
   },
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  debug: true,
-  secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
+  jwt: { maxAge: 30 * 24 * 60 * 60 },
+  secret: process.env.NEXTAUTH_SECRET || (process.env.NODE_ENV !== 'production' ? 'dev-secret-change-me' : undefined),
+  debug: process.env.NODE_ENV === 'development',
 }
+
+

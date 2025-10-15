@@ -12,7 +12,7 @@ export interface User {
 }
 
 // Check if we're in a serverless environment
-const isServerless = (): boolean => {
+const isServerless = () => {
   return process.env.VERCEL === '1' || process.env.NODE_ENV === 'production'
 }
 

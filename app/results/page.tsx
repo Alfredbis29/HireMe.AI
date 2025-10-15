@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import JobListings from '@/components/JobListings'
-import { ArrowLeft, Brain, CheckCircle, FileText, Target, TrendingUp, Users, Zap, Briefcase } from 'lucide-react'
+import { ArrowLeft, Brain, CheckCircle, FileText, Target, TrendingUp, Users, Zap } from 'lucide-react'
 
 interface AnalysisResult {
   overallScore: number
@@ -353,15 +353,38 @@ export default function ResultsPage() {
             </CardContent>
           </Card>
 
-          {/* Job Matches */}
+          {/* LinkedIn Job Suggestions */}
           <Card className="border-0 shadow-lg mb-8">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Users className="mr-2 h-5 w-5" />
-                Recommended Job Opportunities
+                LinkedIn Job Opportunities
               </CardTitle>
               <CardDescription>
-                Jobs that match your profile and skills
+                Real job postings from LinkedIn that match your profile and skills
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <JobListings 
+                skills={analysis.skills}
+                experience={analysis.experience}
+                onJobClick={(job) => {
+                  console.log('Job clicked:', job)
+                  // You can add additional logic here if needed
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Traditional Job Matches (Fallback) */}
+          <Card className="border-0 shadow-lg mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Users className="mr-2 h-5 w-5" />
+                Additional Job Matches
+              </CardTitle>
+              <CardDescription>
+                More opportunities that align with your profile
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -441,31 +464,6 @@ export default function ResultsPage() {
           </div>
         </div>
       </div>
-
-      {/* Job Listings Section */}
-      <section className="bg-gradient-to-br from-green-50 to-blue-50 py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="flex items-center justify-center mb-4">
-                <Briefcase className="h-8 w-8 text-green-600 mr-3" />
-                <h2 className="text-3xl font-bold text-gray-900">
-                  Your Next Career Opportunity
-                </h2>
-              </div>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Based on your resume analysis, we&apos;ve found the perfect job matches for you. 
-                Apply directly on LinkedIn and take the next step in your career!
-              </p>
-            </div>
-            
-            <JobListings 
-              skills={analysis.skills}
-              experience={analysis.experience}
-            />
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
