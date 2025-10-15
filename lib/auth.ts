@@ -53,20 +53,15 @@ export const authOptions: NextAuthOptions = {
       }
       if (user) {
         // Credentials path
-        // @ts-expect-error id/email/name augmentation
         token.id = user.id
-        // @ts-expect-error id/email/name augmentation
         token.email = user.email
-        // @ts-expect-error id/email/name augmentation
         token.name = user.name
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        // @ts-expect-error augment
         session.user.id = token.id as string
-        // @ts-expect-error augment
         session.accessToken = (token as any).accessToken as string
       }
       return session
