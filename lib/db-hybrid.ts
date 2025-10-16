@@ -13,7 +13,8 @@ export interface User {
 
 // Check if we're in a serverless environment
 const isServerless = () => {
-  return process.env.VERCEL === '1' || process.env.NODE_ENV === 'production'
+  // Always return false so we use the file-based DB even in serverless/production
+  return false
 }
 
 // Create a new user
