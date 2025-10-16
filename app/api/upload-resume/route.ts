@@ -33,6 +33,14 @@ interface ResumeAnalysisResponse {
 }
 
 export async function POST(request: NextRequest) {
+    // Require authentication
+    const session = request.cookies.get('user_session')
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Authentication required. Please sign in to upload files.' },
+        { status: 401 }
+      )
+    }
   try {
     console.log('📤 Upload API called')
     

@@ -11,6 +11,16 @@ import { Progress } from '@/components/ui/progress'
 import { ArrowLeft, Brain, FileText, Upload, X } from 'lucide-react'
 
 export default function UploadPage() {
+  // Check for user session cookie
+  if (typeof window !== 'undefined') {
+    const hasSession = document.cookie.includes('user_session=')
+    if (!hasSession) {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login'
+      }
+      return null
+    }
+  }
   const [file, setFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
