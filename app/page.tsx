@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowRight, Brain, FileText, Target, Users, Zap } from 'lucide-react'
+import UserProfile from '@/components/UserProfile'
+import { ArrowRight, Brain, FileText, Target, Users, Zap, Lock } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -15,9 +16,7 @@ export default function Home() {
               <span className="text-2xl font-bold text-gray-900">HireMe.AI</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/upload">
-                <Button variant="outline">Get Started</Button>
-              </Link>
+              <UserProfile />
             </div>
           </div>
         </div>
@@ -37,16 +36,32 @@ export default function Home() {
             and career optimization suggestions to land your dream job.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/upload">
+            <Link href="/signup">
               <Button size="lg" className="text-lg px-8 py-6">
-                Upload Resume
+                Get Started Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6">
-              Learn More
-            </Button>
+            <Link href="/login">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent font-semibold"
+                data-signin="true"
+                style={{ 
+                  display: 'inline-flex',
+                  visibility: 'visible',
+                  opacity: '1',
+                  pointerEvents: 'auto'
+                }}
+              >
+                Sign In
+              </Button>
+            </Link>
           </div>
+          <p className="text-sm text-gray-500 mt-4">
+            🔒 Secure authentication required for resume upload and analysis
+          </p>
         </div>
       </section>
 
@@ -134,6 +149,18 @@ export default function Home() {
               </CardDescription>
             </CardHeader>
           </Card>
+
+          <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+            <CardHeader>
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                <Lock className="h-6 w-6 text-green-600" />
+              </div>
+              <CardTitle>Secure & Private</CardTitle>
+              <CardDescription>
+                Your resume data is protected with secure authentication and privacy controls.
+              </CardDescription>
+            </CardHeader>
+          </Card>
         </div>
       </section>
 
@@ -144,14 +171,32 @@ export default function Home() {
             Ready to Transform Your Career?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of professionals who have already optimized their resumes with AI.
+            Join thousands of professionals who have already optimized their resumes with AI. Create your free account to get started.
           </p>
-          <Link href="/upload">
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
-              Start Your AI Analysis
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/signup">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
+                Create Free Account
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-blue-600 bg-transparent font-semibold"
+                data-signin="true"
+                style={{ 
+                  display: 'inline-flex',
+                  visibility: 'visible',
+                  opacity: '1',
+                  pointerEvents: 'auto'
+                }}
+              >
+                Sign In
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

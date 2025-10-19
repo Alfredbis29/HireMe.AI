@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Only hide specific unwanted injected content, not all sign-in buttons */
+[class*="careerflow"],
+[class*="Signintoviewdetails"],
+[class*="youAreOneStepAwayFrom"] {
+  display: none !important;
+}
+
+/* Hide any third-party widgets that might be injected */
+div[style*="position: fixed"][style*="bottom"] {
+  display: none !important;
+}
+
+/* Ensure sign-in buttons are always visible */
+a[href*="/login"] button,
+button[data-signin="true"] {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

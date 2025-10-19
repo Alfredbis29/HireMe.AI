@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import JobListings from '@/components/JobListings'
 import { ArrowLeft, Brain, CheckCircle, FileText, Target, TrendingUp, Users, Zap } from 'lucide-react'
 
 interface AnalysisResult {
@@ -40,12 +42,19 @@ interface AnalysisResult {
 }
 
 export default function ResultsPage() {
+  const { data: session, status } = useSession()
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(true)
   const [jobSuggestions, setJobSuggestions] = useState<AnalysisResult['jobMatches']>([])
   const [jobsLoading, setJobsLoading] = useState(false)
 
   useEffect(() => {
+    // Check authentication first
+    if (status === 'unauthenticated') {
+      setLoading(false)
+      return
+    }
+
     const urlParams = new URLSearchParams(window.location.search)
     const analysisData = urlParams.get('analysis')
     let parsedAnalysis: AnalysisResult | null = null
@@ -63,6 +72,7 @@ export default function ResultsPage() {
       setAnalysis(parsedAnalysis)
     }
     setLoading(false)
+current-post
     if (parsedAnalysis) {
       setJobsLoading(true)
       fetch('/api/jobs/search', {
@@ -82,6 +92,8 @@ export default function ResultsPage() {
         .finally(() => setJobsLoading(false))
     }
   }, [])
+
+  }, [status])
 
   const getDemoAnalysis = (): AnalysisResult => ({
     overallScore: 78,
@@ -157,6 +169,44 @@ export default function ResultsPage() {
         <div className="text-center">
           <Brain className="h-12 w-12 text-blue-600 animate-spin mx-auto mb-4" />
           <p className="text-lg text-gray-600">Loading your analysis...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show authentication required if not logged in
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="mb-6">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Brain className="h-8 w-8 text-blue-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Account Required
+            </h1>
+            <p className="text-gray-600 mb-6">
+              Please create an account to view your resume analysis results
+            </p>
+          </div>
+          <div className="space-y-4">
+            <Link href="/signup">
+              <Button size="lg" className="w-full">
+                Create Free Account
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button variant="outline" size="lg" className="w-full">
+                Already have an account? Sign In
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button variant="outline" className="w-full">
+                Back to Home
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -326,7 +376,31 @@ export default function ResultsPage() {
             </CardContent>
           </Card>
 
-          {/* Job Matches (Live Suggestions) */}
+          {/* LinkedIn Job Suggestions */}
+          <Card className="border-0 shadow-lg mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Users className="mr-2 h-5 w-5" />
+                LinkedIn Job Opportunities
+              </CardTitle>
+              <CardDescription>
+                Real job postings from LinkedIn that match your profile and skills
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <JobListings 
+                skills={analysis.skills}
+                experience={analysis.experience}
+                onJobClick={(job) => {
+                  console.log('Job clicked:', job)
+                  // You can add additional logic here if needed
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Traditional Job Matches (Fallback) */}
+
           <Card className="border-0 shadow-lg mb-8">
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -335,6 +409,12 @@ export default function ResultsPage() {
               </CardTitle>
               <CardDescription>
                 Jobs that match your latest profile and skills
+
+                Additional Job Matches
+              </CardTitle>
+              <CardDescription>
+                More opportunities that align with your profile
+
               </CardDescription>
             </CardHeader>
             <CardContent>

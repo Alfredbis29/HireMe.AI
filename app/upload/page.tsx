@@ -1,21 +1,109 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
+import UserProfile from '@/components/UserProfile'
 import { ArrowLeft, Brain, FileText, Upload, X } from 'lucide-react'
 
 export default function UploadPage() {
+  const { data: session, status } = useSession()
   const [file, setFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [dragActive, setDragActive] = useState(false)
   const router = useRouter()
+
+  // Redirect to sign-up if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/signup')
+    }
+  }, [status, router])
+
+  // Show loading while checking authentication
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show login required message if not authenticated
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center max-w-lg mx-auto p-6">
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Brain className="h-10 w-10 text-blue-600" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              🔒 Authentication Required
+            </h1>
+            <p className="text-lg text-gray-600 mb-2">
+              To upload and analyze your resume, you need to be signed in.
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              This ensures your data is secure and personalized to your account.
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              What you&apos;ll get with an account:
+            </h3>
+            <div className="space-y-3 text-left">
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">AI-powered resume analysis</p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Personalized job recommendations</p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Career optimization tips</p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <p className="text-sm text-gray-600">Secure data storage</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <Link href="/signup">
+              <Button size="lg" className="w-full text-lg py-6">
+                🚀 Create Free Account
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button variant="outline" size="lg" className="w-full text-lg py-6">
+                🔑 Already have an account? Sign In
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button variant="ghost" className="w-full">
+                ← Back to Home
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
@@ -80,6 +168,12 @@ export default function UploadPage() {
       })
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Authentication failed - redirect to login
+          alert('Your session has expired. Please sign in again.')
+          router.push('/login')
+          return
+        }
         throw new Error('Upload failed')
       }
 
@@ -109,12 +203,15 @@ export default function UploadPage() {
               <Brain className="h-8 w-8 text-blue-600" />
               <span className="text-2xl font-bold text-gray-900">HireMe.AI</span>
             </div>
-            <Link href="/">
-              <Button variant="outline">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/">
+                <Button variant="outline">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Home
+                </Button>
+              </Link>
+              <UserProfile />
+            </div>
           </div>
         </div>
       </nav>
@@ -125,9 +222,14 @@ export default function UploadPage() {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Upload Your Resume
             </h1>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 mb-2">
               Get AI-powered analysis and career insights in seconds
             </p>
+            {session?.user && (
+              <p className="text-sm text-gray-500">
+                Welcome back, {session.user.name}! Ready to optimize your career?
+              </p>
+            )}
           </div>
 
           <Card className="border-0 shadow-lg">
