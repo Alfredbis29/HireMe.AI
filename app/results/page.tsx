@@ -42,25 +42,45 @@ interface AnalysisResult {
 export default function ResultsPage() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(true)
+  const [jobSuggestions, setJobSuggestions] = useState<AnalysisResult['jobMatches']>([])
+  const [jobsLoading, setJobsLoading] = useState(false)
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const analysisData = urlParams.get('analysis')
-    
+    let parsedAnalysis: AnalysisResult | null = null
     if (analysisData) {
       try {
-        const parsedAnalysis = JSON.parse(decodeURIComponent(analysisData))
+        parsedAnalysis = JSON.parse(decodeURIComponent(analysisData))
         setAnalysis(parsedAnalysis)
       } catch (error) {
         console.error('Error parsing analysis data:', error)
-        // Fallback to demo data
-        setAnalysis(getDemoAnalysis())
+        parsedAnalysis = getDemoAnalysis()
+        setAnalysis(parsedAnalysis)
       }
     } else {
-      // Demo data for development
-      setAnalysis(getDemoAnalysis())
+      parsedAnalysis = getDemoAnalysis()
+      setAnalysis(parsedAnalysis)
     }
     setLoading(false)
+    if (parsedAnalysis) {
+      setJobsLoading(true)
+      fetch('/api/jobs/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          skills: parsedAnalysis.skills,
+          experience: parsedAnalysis.experience,
+          jobTitle: parsedAnalysis.jobMatches?.[0]?.title || ''
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.jobs) setJobSuggestions(data.jobs)
+        })
+        .catch(err => console.error('Job suggestion fetch error:', err))
+        .finally(() => setJobsLoading(false))
+    }
   }, [])
 
   const getDemoAnalysis = (): AnalysisResult => ({
@@ -306,40 +326,50 @@ export default function ResultsPage() {
             </CardContent>
           </Card>
 
-          {/* Job Matches */}
+          {/* Job Matches (Live Suggestions) */}
           <Card className="border-0 shadow-lg mb-8">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Users className="mr-2 h-5 w-5" />
-                Recommended Job Opportunities
+                Current Job Suggestions
               </CardTitle>
               <CardDescription>
-                Jobs that match your profile and skills
+                Jobs that match your latest profile and skills
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {analysis.jobMatches.map((job, index) => (
-                  <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-lg">{job.title}</h3>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-600">{job.company}</span>
-                        <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                          {job.matchScore}% match
+              {jobsLoading ? (
+                <div className="text-center text-gray-500">Fetching job suggestions...</div>
+              ) : jobSuggestions.length > 0 ? (
+                <div className="space-y-4">
+                  {jobSuggestions.map((job, index) => (
+                    <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-lg">{job.title}</h3>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-gray-600">{job.company}</span>
+                          {job.matchScore && (
+                            <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                              {job.matchScore}% match
+                            </div>
+                          )}
                         </div>
                       </div>
+                      <p className="text-sm text-gray-600 mb-2">{job.description}</p>
+                      {job.matchScore && (
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${job.matchScore}%` }}
+                          ></div>
+                        </div>
+                      )}
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{job.description}</p>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${job.matchScore}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center text-gray-500">No job suggestions found.</div>
+              )}
             </CardContent>
           </Card>
 

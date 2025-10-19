@@ -222,7 +222,7 @@ Be specific and actionable in your recommendations.
     return NextResponse.json(
       { 
         error: 'Failed to analyze resume',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
       },
       { status: 500 }
     )
