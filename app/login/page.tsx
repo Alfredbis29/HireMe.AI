@@ -1,133 +1,111 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-current-post
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-
-export default function LoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [error, setError] = useState('')
-  const router = useRouter()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    })
-    const data = await res.json()
-    if (!res.ok) setError(data.error)
-    else router.push('/upload')
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md bg-white p-8 rounded shadow">
-        <h1 className="text-2xl font-bold mb-4">Sign In</h1>
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full p-2 border rounded" />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full p-2 border rounded" />
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-        <Button type="submit" className="w-full">Sign In</Button>
-        <Link href="/signup" className="block text-center text-blue-600 mt-2">Don't have an account? Sign Up</Link>
-      </form>
-
-import { signIn, getSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Brain, Chrome, Mail, Lock, ArrowLeft, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { useState } from "react";
+import { signIn, getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Brain,
+  Chrome,
+  Mail,
+  Lock,
+  ArrowLeft,
+  Loader2,
+  Eye,
+  EyeOff,
+  AlertCircle,
+} from "lucide-react";
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  })
-  const router = useRouter()
+    email: "",
+    password: "",
+  });
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleEmailPasswordSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!formData.email || !formData.password) {
-      setError('Email and password are required')
-      return
+      setError("Email and password are required");
+      return;
     }
 
     try {
-      setIsLoading(true)
-      setError('')
+      setIsLoading(true);
+      setError("");
 
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
         redirect: false,
-      })
+      });
 
       if (result?.error) {
-        setError('Invalid email or password')
+        setError("Invalid email or password");
       } else if (result?.ok) {
-        console.log('✅ Login successful, redirecting to home page...')
+        console.log("✅ Login successful, redirecting to home page...");
         // Small delay to ensure session is established
         setTimeout(() => {
-          router.push('/')
-          router.refresh()
-        }, 100)
+          router.push("/");
+          router.refresh();
+        }, 100);
       }
     } catch (error) {
-      console.error('Sign in error:', error)
-      setError('An unexpected error occurred. Please try again.')
+      console.error("Sign in error:", error);
+      setError("An unexpected error occurred. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGoogleSignIn = async () => {
     try {
-      setIsLoading(true)
-      setError('')
-      
-      const result = await signIn('google', {
+      setIsLoading(true);
+      setError("");
+
+      const result = await signIn("google", {
         redirect: false,
-        callbackUrl: '/'
-      })
+        callbackUrl: "/",
+      });
 
       if (result?.error) {
-        setError('Failed to sign in with Google. Please try again.')
+        setError("Failed to sign in with Google. Please try again.");
       } else if (result?.ok) {
-        console.log('✅ Google login successful, redirecting to home page...')
+        console.log("✅ Google login successful, redirecting to home page...");
         // Small delay to ensure session is established
         setTimeout(() => {
-          router.push('/')
-          router.refresh()
-        }, 100)
+          router.push("/");
+          router.refresh();
+        }, 100);
       }
     } catch (error) {
-      console.error('Sign in error:', error)
-      setError('An unexpected error occurred. Please try again.')
+      console.error("Sign in error:", error);
+      setError("An unexpected error occurred. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
@@ -177,7 +155,7 @@ export default function LoginPage() {
                   <Input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Enter your password"
@@ -276,8 +254,11 @@ export default function LoginPage() {
         {/* Sign Up Link */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-blue-600 hover:underline font-medium">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-blue-600 hover:underline font-medium"
+            >
               Sign up here
             </Link>
           </p>
@@ -285,7 +266,10 @@ export default function LoginPage() {
 
         {/* Footer */}
         <div className="text-center mt-6">
-          <Link href="/" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900">
+          <Link
+            href="/"
+            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+          >
             <ArrowLeft className="mr-1 h-4 w-4" />
             Back to Home
           </Link>
@@ -294,11 +278,11 @@ export default function LoginPage() {
         {/* Terms */}
         <div className="text-center mt-4">
           <p className="text-xs text-gray-500">
-            By signing in, you agree to our{' '}
+            By signing in, you agree to our{" "}
             <Link href="/terms" className="text-blue-600 hover:underline">
               Terms of Service
-            </Link>{' '}
-            and{' '}
+            </Link>{" "}
+            and{" "}
             <Link href="/privacy" className="text-blue-600 hover:underline">
               Privacy Policy
             </Link>
@@ -306,5 +290,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,165 +1,151 @@
-'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+"use client";
 
-export default function SignupPage() {
-  const [form, setForm] = useState({ email: '', password: '', name: '' })
-  const [error, setError] = useState('')
-  const router = useRouter()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    })
-    const data = await res.json()
-    if (!res.ok) setError(data.error)
-    else router.push('/login')
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md bg-white p-8 rounded shadow">
-        <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full p-2 border rounded" />
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full p-2 border rounded" />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full p-2 border rounded" />
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-        <Button type="submit" className="w-full">Sign Up</Button>
-        <Link href="/login" className="block text-center text-blue-600 mt-2">Already have an account? Sign In</Link>
-      </form>
-
-import { useState } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Brain, Chrome, Mail, Lock, ArrowLeft, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Brain,
+  Chrome,
+  Mail,
+  Lock,
+  ArrowLeft,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 export default function SignUpPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  })
-  const router = useRouter()
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleEmailPasswordSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     // Validate form
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('All fields are required')
-      return
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      setError("All fields are required");
+      return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
-      return
+      setError("Passwords do not match");
+      return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long')
-      return
+      setError("Password must be at least 6 characters long");
+      return;
     }
 
     try {
-      setIsLoading(true)
-      setError('')
+      setIsLoading(true);
+      setError("");
 
       // Register user
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
           password: formData.password,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Registration failed')
+        throw new Error(data.error || "Registration failed");
       }
 
       // Auto sign in after registration
-      const signInResult = await signIn('credentials', {
+      const signInResult = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
         redirect: false,
-      })
+      });
 
       if (signInResult?.error) {
-        setError('Account created but failed to sign in. Please try signing in manually.')
+        setError(
+          "Account created but failed to sign in. Please try signing in manually."
+        );
       } else {
-        setSuccess(true)
+        setSuccess(true);
         setTimeout(() => {
-          router.push('/')
-          router.refresh()
-        }, 2000)
+          router.push("/");
+          router.refresh();
+        }, 2000);
       }
     } catch (error) {
-      console.error('Registration error:', error)
-      setError(error instanceof Error ? error.message : 'Registration failed')
+      console.error("Registration error:", error);
+      setError(error instanceof Error ? error.message : "Registration failed");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGoogleSignUp = async () => {
     try {
-      setIsLoading(true)
-      setError('')
-      
-      const result = await signIn('google', {
+      setIsLoading(true);
+      setError("");
+
+      const result = await signIn("google", {
         redirect: false,
-        callbackUrl: '/'
-      })
+        callbackUrl: "/",
+      });
 
       if (result?.error) {
-        setError('Failed to sign up with Google. Please try again.')
+        setError("Failed to sign up with Google. Please try again.");
       } else if (result?.ok) {
-        setSuccess(true)
+        setSuccess(true);
         setTimeout(() => {
-          router.push('/')
-          router.refresh()
-        }, 2000)
+          router.push("/");
+          router.refresh();
+        }, 2000);
       }
     } catch (error) {
-      console.error('Sign up error:', error)
-      setError('An unexpected error occurred. Please try again.')
+      console.error("Sign up error:", error);
+      setError("An unexpected error occurred. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (success) {
     return (
@@ -174,14 +160,15 @@ export default function SignUpPage() {
                 Welcome to HireMe.AI!
               </h1>
               <p className="text-gray-600 mb-6">
-                Your account has been created successfully. Redirecting you to the dashboard...
+                Your account has been created successfully. Redirecting you to
+                the dashboard...
               </p>
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             </CardContent>
           </Card>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -245,7 +232,7 @@ export default function SignUpPage() {
                   <Input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Enter your password"
@@ -362,8 +349,11 @@ export default function SignUpPage() {
         {/* Sign In Link */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link href="/login" className="text-blue-600 hover:underline font-medium">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-blue-600 hover:underline font-medium"
+            >
               Sign in here
             </Link>
           </p>
@@ -371,7 +361,10 @@ export default function SignUpPage() {
 
         {/* Footer */}
         <div className="text-center mt-6">
-          <Link href="/" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900">
+          <Link
+            href="/"
+            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+          >
             <ArrowLeft className="mr-1 h-4 w-4" />
             Back to Home
           </Link>
@@ -380,11 +373,11 @@ export default function SignUpPage() {
         {/* Terms */}
         <div className="text-center mt-4">
           <p className="text-xs text-gray-500">
-            By signing up, you agree to our{' '}
+            By signing up, you agree to our{" "}
             <Link href="/terms" className="text-blue-600 hover:underline">
               Terms of Service
-            </Link>{' '}
-            and{' '}
+            </Link>{" "}
+            and{" "}
             <Link href="/privacy" className="text-blue-600 hover:underline">
               Privacy Policy
             </Link>
@@ -392,5 +385,5 @@ export default function SignUpPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
