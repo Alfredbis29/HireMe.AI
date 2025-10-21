@@ -43,20 +43,6 @@ export function saveUsers(users: User[]) {
   }
 }
 
-export function createUser(email: string, password: string, name: string): User {
-  const users = getUsers()
-  const newUser: User = {
-    id: Date.now().toString(),
-    email,
-    password,
-    name,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-  users.push(newUser)
-  saveUsers(users)
-  return newUser
-}
 
 export function findUserByEmail(email: string): User | null {
   const users = getUsers()
@@ -66,6 +52,7 @@ export function findUserByEmail(email: string): User | null {
 export function findUserById(id: string): User | null {
   const users = getUsers()
   return users.find(u => u.id === id) ?? null
+}
 
 const DB_PATH = path.join(process.cwd(), 'data', 'users.json')
 
@@ -74,30 +61,6 @@ const ensureDataDir = () => {
   const dataDir = path.join(process.cwd(), 'data')
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true })
-  }
-}
-
-// Read users from file
-export const getUsers = (): User[] => {
-  ensureDataDir()
-  try {
-    if (fs.existsSync(DB_PATH)) {
-      const data = fs.readFileSync(DB_PATH, 'utf8')
-      return JSON.parse(data)
-    }
-  } catch (error) {
-    console.error('Error reading users:', error)
-  }
-  return []
-}
-
-// Write users to file
-export const saveUsers = (users: User[]) => {
-  ensureDataDir()
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(users, null, 2))
-  } catch (error) {
-    console.error('Error saving users:', error)
   }
 }
 
@@ -136,18 +99,6 @@ export const createUser = async (email: string, password: string, name: string):
     console.error('❌ Local DB: Error creating user:', error)
     throw error
   }
-}
-
-// Find user by email
-export const findUserByEmail = (email: string): User | null => {
-  const users = getUsers()
-  return users.find(user => user.email === email) || null
-}
-
-// Find user by ID
-export const findUserById = (id: string): User | null => {
-  const users = getUsers()
-  return users.find(user => user.id === id) || null
 }
 
 // Verify password

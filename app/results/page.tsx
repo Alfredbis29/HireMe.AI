@@ -1,167 +1,179 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import JobListings from '@/components/JobListings'
-import { ArrowLeft, Brain, CheckCircle, FileText, Target, TrendingUp, Users, Zap } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import JobListings from "@/components/JobListings";
+import {
+  ArrowLeft,
+  Brain,
+  CheckCircle,
+  FileText,
+  Target,
+  TrendingUp,
+  Users,
+  Zap,
+} from "lucide-react";
 
 interface AnalysisResult {
-  overallScore: number
-  strengths: string[]
-  weaknesses: string[]
-  suggestions: string[]
-  skills: string[]
+  overallScore: number;
+  strengths: string[];
+  weaknesses: string[];
+  suggestions: string[];
+  skills: string[];
   experience: {
-    years: number
-    level: string
-    summary: string
-  }
+    years: number;
+    level: string;
+    summary: string;
+  };
   education: {
-    degree: string
-    field: string
-    institution?: string
-  }
+    degree: string;
+    field: string;
+    institution?: string;
+  };
   jobMatches: Array<{
-    title: string
-    company: string
-    matchScore: number
-    description: string
-    requirements: string[]
-  }>
-  keywords: string[]
-  atsScore: number
+    title: string;
+    company: string;
+    matchScore: number;
+    description: string;
+    requirements: string[];
+  }>;
+  keywords: string[];
+  atsScore: number;
   recommendations: {
-    immediate: string[]
-    longTerm: string[]
-    skills: string[]
-  }
+    immediate: string[];
+    longTerm: string[];
+    skills: string[];
+  };
 }
 
 export default function ResultsPage() {
-  const { data: session, status } = useSession()
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [jobSuggestions, setJobSuggestions] = useState<AnalysisResult['jobMatches']>([])
-  const [jobsLoading, setJobsLoading] = useState(false)
+  const { data: session, status } = useSession();
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [jobSuggestions, setJobSuggestions] = useState<
+    AnalysisResult["jobMatches"]
+  >([]);
+  const [jobsLoading, setJobsLoading] = useState(false);
 
   useEffect(() => {
     // Check authentication first
-    if (status === 'unauthenticated') {
-      setLoading(false)
-      return
+    if (status === "unauthenticated") {
+      setLoading(false);
+      return;
     }
 
-    const urlParams = new URLSearchParams(window.location.search)
-    const analysisData = urlParams.get('analysis')
-    let parsedAnalysis: AnalysisResult | null = null
+    const urlParams = new URLSearchParams(window.location.search);
+    const analysisData = urlParams.get("analysis");
+    let parsedAnalysis: AnalysisResult | null = null;
     if (analysisData) {
       try {
-        parsedAnalysis = JSON.parse(decodeURIComponent(analysisData))
-        setAnalysis(parsedAnalysis)
+        parsedAnalysis = JSON.parse(decodeURIComponent(analysisData));
+        setAnalysis(parsedAnalysis);
       } catch (error) {
-        console.error('Error parsing analysis data:', error)
-        parsedAnalysis = getDemoAnalysis()
-        setAnalysis(parsedAnalysis)
+        console.error("Error parsing analysis data:", error);
+        parsedAnalysis = getDemoAnalysis();
+        setAnalysis(parsedAnalysis);
       }
     } else {
-      parsedAnalysis = getDemoAnalysis()
-      setAnalysis(parsedAnalysis)
+      parsedAnalysis = getDemoAnalysis();
+      setAnalysis(parsedAnalysis);
     }
-    setLoading(false)
-current-post
+    setLoading(false);
+
     if (parsedAnalysis) {
-      setJobsLoading(true)
-      fetch('/api/jobs/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      setJobsLoading(true);
+      fetch("/api/jobs/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           skills: parsedAnalysis.skills,
           experience: parsedAnalysis.experience,
-          jobTitle: parsedAnalysis.jobMatches?.[0]?.title || ''
-        })
+          jobTitle: parsedAnalysis.jobMatches?.[0]?.title || "",
+        }),
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.jobs) setJobSuggestions(data.jobs)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.jobs) setJobSuggestions(data.jobs);
         })
-        .catch(err => console.error('Job suggestion fetch error:', err))
-        .finally(() => setJobsLoading(false))
+        .catch((err) => console.error("Job suggestion fetch error:", err))
+        .finally(() => setJobsLoading(false));
     }
-  }, [])
-
-  }, [status])
+  }, [status]);
 
   const getDemoAnalysis = (): AnalysisResult => ({
     overallScore: 78,
     strengths: [
-      'Strong technical background in software development',
-      'Relevant work experience in the field',
-      'Good educational qualifications',
-      'Clear career progression'
+      "Strong technical background in software development",
+      "Relevant work experience in the field",
+      "Good educational qualifications",
+      "Clear career progression",
     ],
     weaknesses: [
-      'Limited leadership experience mentioned',
-      'Could benefit from more quantified achievements',
-      'Missing some key industry keywords'
+      "Limited leadership experience mentioned",
+      "Could benefit from more quantified achievements",
+      "Missing some key industry keywords",
     ],
     suggestions: [
-      'Add quantified achievements with specific numbers',
-      'Include more action verbs in job descriptions',
-      'Highlight leadership and team collaboration skills',
-      'Add relevant certifications or courses'
+      "Add quantified achievements with specific numbers",
+      "Include more action verbs in job descriptions",
+      "Highlight leadership and team collaboration skills",
+      "Add relevant certifications or courses",
     ],
-    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
+    skills: ["JavaScript", "React", "Node.js", "Python", "SQL", "Git"],
     experience: {
       years: 5,
-      level: 'senior',
-      summary: 'Software development experience with web technologies'
+      level: "senior",
+      summary: "Software development experience with web technologies",
     },
     education: {
-      degree: 'Bachelor',
-      field: 'Computer Science',
-      institution: 'University of Technology'
+      degree: "Bachelor",
+      field: "Computer Science",
+      institution: "University of Technology",
     },
     jobMatches: [
       {
-        title: 'Senior Software Engineer',
-        company: 'TechCorp Inc.',
+        title: "Senior Software Engineer",
+        company: "TechCorp Inc.",
         matchScore: 92,
-        description: 'Full-stack development role with React and Node.js',
-        requirements: ['JavaScript', 'React', 'Node.js', 'Leadership']
+        description: "Full-stack development role with React and Node.js",
+        requirements: ["JavaScript", "React", "Node.js", "Leadership"],
       },
       {
-        title: 'Full Stack Developer',
-        company: 'StartupXYZ',
+        title: "Full Stack Developer",
+        company: "StartupXYZ",
         matchScore: 88,
-        description: 'Building scalable web applications',
-        requirements: ['JavaScript', 'React', 'Node.js', 'TypeScript']
+        description: "Building scalable web applications",
+        requirements: ["JavaScript", "React", "Node.js", "TypeScript"],
       },
       {
-        title: 'Software Developer',
-        company: 'Enterprise Solutions',
+        title: "Software Developer",
+        company: "Enterprise Solutions",
         matchScore: 85,
-        description: 'Enterprise software development',
-        requirements: ['JavaScript', 'React', 'Node.js', 'SQL']
-      }
+        description: "Enterprise software development",
+        requirements: ["JavaScript", "React", "Node.js", "SQL"],
+      },
     ],
-    keywords: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
+    keywords: ["JavaScript", "React", "Node.js", "Python", "SQL", "Git"],
     atsScore: 75,
     recommendations: {
       immediate: [
-        'Add quantified achievements with specific numbers',
-        'Include more action verbs in job descriptions'
+        "Add quantified achievements with specific numbers",
+        "Include more action verbs in job descriptions",
       ],
-      longTerm: [
-        'Develop leadership skills',
-        'Get relevant certifications'
-      ],
-      skills: ['TypeScript', 'AWS', 'Docker']
-    }
-  })
+      longTerm: ["Develop leadership skills", "Get relevant certifications"],
+      skills: ["TypeScript", "AWS", "Docker"],
+    },
+  });
 
   if (loading) {
     return (
@@ -171,11 +183,11 @@ current-post
           <p className="text-lg text-gray-600">Loading your analysis...</p>
         </div>
       </div>
-    )
+    );
   }
 
   // Show authentication required if not logged in
-  if (status === 'unauthenticated') {
+  if (status === "unauthenticated") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-6">
@@ -209,20 +221,22 @@ current-post
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!analysis) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">No Analysis Found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            No Analysis Found
+          </h1>
           <Link href="/upload">
             <Button>Upload Resume</Button>
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -233,7 +247,9 @@ current-post
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Brain className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">HireMe.AI</span>
+              <span className="text-2xl font-bold text-gray-900">
+                HireMe.AI
+              </span>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/">
@@ -273,9 +289,13 @@ current-post
                   {analysis.overallScore}
                 </div>
                 <div className="flex-1">
-                  <Progress value={analysis.overallScore} className="h-4 mb-2" />
+                  <Progress
+                    value={analysis.overallScore}
+                    className="h-4 mb-2"
+                  />
                   <p className="text-sm text-gray-600">
-                    Your resume scores {analysis.overallScore}% based on ATS optimization and content quality
+                    Your resume scores {analysis.overallScore}% based on ATS
+                    optimization and content quality
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
                     ATS Score: {analysis.atsScore}%
@@ -352,7 +372,9 @@ current-post
                   <h4 className="font-semibold mb-2">Immediate Actions</h4>
                   <ul className="space-y-1">
                     {analysis.recommendations.immediate.map((rec, index) => (
-                      <li key={index} className="text-sm text-gray-600">• {rec}</li>
+                      <li key={index} className="text-sm text-gray-600">
+                        • {rec}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -360,7 +382,9 @@ current-post
                   <h4 className="font-semibold mb-2">Long-term Goals</h4>
                   <ul className="space-y-1">
                     {analysis.recommendations.longTerm.map((rec, index) => (
-                      <li key={index} className="text-sm text-gray-600">• {rec}</li>
+                      <li key={index} className="text-sm text-gray-600">
+                        • {rec}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -368,7 +392,9 @@ current-post
                   <h4 className="font-semibold mb-2">Skills to Develop</h4>
                   <ul className="space-y-1">
                     {analysis.recommendations.skills.map((skill, index) => (
-                      <li key={index} className="text-sm text-gray-600">• {skill}</li>
+                      <li key={index} className="text-sm text-gray-600">
+                        • {skill}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -384,15 +410,16 @@ current-post
                 LinkedIn Job Opportunities
               </CardTitle>
               <CardDescription>
-                Real job postings from LinkedIn that match your profile and skills
+                Real job postings from LinkedIn that match your profile and
+                skills
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <JobListings 
+              <JobListings
                 skills={analysis.skills}
                 experience={analysis.experience}
                 onJobClick={(job) => {
-                  console.log('Job clicked:', job)
+                  console.log("Job clicked:", job);
                   // You can add additional logic here if needed
                 }}
               />
@@ -408,26 +435,31 @@ current-post
                 Current Job Suggestions
               </CardTitle>
               <CardDescription>
-                Jobs that match your latest profile and skills
-
-                Additional Job Matches
-              </CardTitle>
+                Jobs that match your latest profile and skills Additional Job
+                Matches
+              </CardDescription>
               <CardDescription>
                 More opportunities that align with your profile
-
               </CardDescription>
             </CardHeader>
             <CardContent>
               {jobsLoading ? (
-                <div className="text-center text-gray-500">Fetching job suggestions...</div>
+                <div className="text-center text-gray-500">
+                  Fetching job suggestions...
+                </div>
               ) : jobSuggestions.length > 0 ? (
                 <div className="space-y-4">
                   {jobSuggestions.map((job, index) => (
-                    <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div
+                      key={index}
+                      className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold text-lg">{job.title}</h3>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600">{job.company}</span>
+                          <span className="text-sm text-gray-600">
+                            {job.company}
+                          </span>
                           {job.matchScore && (
                             <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
                               {job.matchScore}% match
@@ -435,10 +467,12 @@ current-post
                           )}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{job.description}</p>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {job.description}
+                      </p>
                       {job.matchScore && (
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-green-500 h-2 rounded-full transition-all duration-300"
                             style={{ width: `${job.matchScore}%` }}
                           ></div>
@@ -448,7 +482,9 @@ current-post
                   ))}
                 </div>
               ) : (
-                <div className="text-center text-gray-500">No job suggestions found.</div>
+                <div className="text-center text-gray-500">
+                  No job suggestions found.
+                </div>
               )}
             </CardContent>
           </Card>
@@ -462,7 +498,10 @@ current-post
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {analysis.skills.map((skill, index) => (
-                    <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                    <span
+                      key={index}
+                      className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                    >
                       {skill}
                     </span>
                   ))}
@@ -476,12 +515,24 @@ current-post
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <p className="text-sm"><strong>Years:</strong> {analysis.experience.years} years</p>
-                  <p className="text-sm"><strong>Level:</strong> {analysis.experience.level}</p>
-                  <p className="text-sm"><strong>Summary:</strong> {analysis.experience.summary}</p>
-                  <p className="text-sm"><strong>Education:</strong> {analysis.education.degree} in {analysis.education.field}</p>
+                  <p className="text-sm">
+                    <strong>Years:</strong> {analysis.experience.years} years
+                  </p>
+                  <p className="text-sm">
+                    <strong>Level:</strong> {analysis.experience.level}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Summary:</strong> {analysis.experience.summary}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Education:</strong> {analysis.education.degree} in{" "}
+                    {analysis.education.field}
+                  </p>
                   {analysis.education.institution && (
-                    <p className="text-sm"><strong>Institution:</strong> {analysis.education.institution}</p>
+                    <p className="text-sm">
+                      <strong>Institution:</strong>{" "}
+                      {analysis.education.institution}
+                    </p>
                   )}
                 </div>
               </CardContent>
@@ -505,5 +556,5 @@ current-post
         </div>
       </div>
     </div>
-  )
+  );
 }
