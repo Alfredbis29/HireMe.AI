@@ -63,11 +63,83 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
-        { status: 500 }
-      )
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-test-key-placeholder') {
+      // Return mock analysis for demo purposes
+      console.log('Using mock analysis - OpenAI API key not configured')
+      
+      const mockAnalysis: ResumeAnalysisResponse = {
+        overallScore: 82,
+        strengths: [
+          'Strong technical background with relevant programming languages',
+          'Good educational foundation in Computer Science',
+          'Demonstrates practical experience with modern technologies'
+        ],
+        weaknesses: [
+          'Could benefit from more quantified achievements and metrics',
+          'Missing some industry-specific keywords',
+          'Consider adding more soft skills and leadership examples'
+        ],
+        suggestions: [
+          'Add specific metrics to quantify your achievements (e.g., "Improved performance by 30%")',
+          'Include more industry-relevant keywords',
+          'Highlight any leadership or team collaboration experiences',
+          'Consider adding a professional summary section'
+        ],
+        skills: ['JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Computer Science'],
+        experience: {
+          years: 5,
+          level: 'mid',
+          summary: '5 years of software development experience with focus on web technologies and cloud platforms'
+        },
+        education: {
+          degree: 'Bachelor',
+          field: 'Computer Science',
+          institution: 'University'
+        },
+        jobMatches: [
+          {
+            title: 'Senior Software Engineer',
+            company: 'Tech Company',
+            matchScore: 88,
+            description: 'Full-stack development role focusing on modern web technologies',
+            requirements: ['JavaScript', 'React', 'Node.js', 'AWS', '5+ years experience']
+          },
+          {
+            title: 'Full Stack Developer',
+            company: 'Startup',
+            matchScore: 85,
+            description: 'Versatile developer role with both frontend and backend responsibilities',
+            requirements: ['JavaScript', 'Python', 'React', 'Node.js', 'Bachelor degree']
+          }
+        ],
+        keywords: ['JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Software Engineer', 'Computer Science'],
+        atsScore: 75,
+        recommendations: {
+          immediate: [
+            'Add quantified achievements to your experience section',
+            'Include more industry-specific keywords',
+            'Highlight any certifications or special projects'
+          ],
+          longTerm: [
+            'Consider pursuing advanced certifications in cloud technologies',
+            'Develop leadership skills through team projects or mentoring',
+            'Stay updated with latest technology trends and frameworks'
+          ],
+          skills: ['TypeScript', 'Docker', 'Kubernetes', 'Machine Learning', 'DevOps']
+        }
+      }
+
+      const response = {
+        ...mockAnalysis,
+        metadata: {
+          analyzedAt: new Date().toISOString(),
+          model: 'mock-analysis',
+          version: '1.0',
+          note: 'This is a demo analysis. Configure OpenAI API key for real AI analysis.'
+        }
+      }
+
+      return NextResponse.json(response)
     }
 
     // Create the analysis prompt

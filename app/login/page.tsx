@@ -1,52 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-current-post
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-
-export default function LoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [error, setError] = useState('')
-  const router = useRouter()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    })
-    const data = await res.json()
-    if (!res.ok) setError(data.error)
-    else router.push('/upload')
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md bg-white p-8 rounded shadow">
-        <h1 className="text-2xl font-bold mb-4">Sign In</h1>
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full p-2 border rounded" />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full p-2 border rounded" />
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-        <Button type="submit" className="w-full">Sign In</Button>
-        <Link href="/signup" className="block text-center text-blue-600 mt-2">Don't have an account? Sign Up</Link>
-      </form>
-
-import { signIn, getSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Brain, Chrome, Mail, Lock, ArrowLeft, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { Brain, Chrome, Mail, ArrowLeft, Loader2, Eye, EyeOff, AlertCircle } from 'lucide-react'
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -69,7 +31,7 @@ export default function LoginPage() {
     e.preventDefault()
     
     if (!formData.email || !formData.password) {
-      setError('Email and password are required')
+      setError('Please fill in all fields')
       return
     }
 
@@ -86,12 +48,8 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Invalid email or password')
       } else if (result?.ok) {
-        console.log('✅ Login successful, redirecting to home page...')
-        // Small delay to ensure session is established
-        setTimeout(() => {
-          router.push('/')
-          router.refresh()
-        }, 100)
+        router.push('/upload')
+        router.refresh()
       }
     } catch (error) {
       console.error('Sign in error:', error)
@@ -108,18 +66,14 @@ export default function LoginPage() {
       
       const result = await signIn('google', {
         redirect: false,
-        callbackUrl: '/'
+        callbackUrl: '/upload'
       })
 
       if (result?.error) {
         setError('Failed to sign in with Google. Please try again.')
       } else if (result?.ok) {
-        console.log('✅ Google login successful, redirecting to home page...')
-        // Small delay to ensure session is established
-        setTimeout(() => {
-          router.push('/')
-          router.refresh()
-        }, 100)
+        router.push('/upload')
+        router.refresh()
       }
     } catch (error) {
       console.error('Sign in error:', error)
@@ -142,11 +96,11 @@ export default function LoginPage() {
             Welcome Back
           </h1>
           <p className="text-gray-600">
-            Sign in to access your AI-powered career insights
+            Sign in to continue optimizing your career with AI
           </p>
         </div>
 
-        {/* Login Card */}
+        {/* Sign In Card */}
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Sign In</CardTitle>
@@ -247,36 +201,15 @@ export default function LoginPage() {
               variant="outline"
             >
               <Chrome className="mr-2 h-5 w-5" />
-              Continue with Google
+              Sign in with Google
             </Button>
-
-            {/* Features */}
-            <div className="pt-4 border-t">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">
-                What you&apos;ll get:
-              </h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-center">
-                  <Lock className="h-4 w-4 text-green-500 mr-2" />
-                  Secure resume analysis
-                </li>
-                <li className="flex items-center">
-                  <Brain className="h-4 w-4 text-blue-500 mr-2" />
-                  AI-powered career insights
-                </li>
-                <li className="flex items-center">
-                  <Chrome className="h-4 w-4 text-purple-500 mr-2" />
-                  Personalized job recommendations
-                </li>
-              </ul>
-            </div>
           </CardContent>
         </Card>
 
         {/* Sign Up Link */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Don&apos;t have an account?{' '}
+            Don't have an account?{' '}
             <Link href="/signup" className="text-blue-600 hover:underline font-medium">
               Sign up here
             </Link>
@@ -289,20 +222,6 @@ export default function LoginPage() {
             <ArrowLeft className="mr-1 h-4 w-4" />
             Back to Home
           </Link>
-        </div>
-
-        {/* Terms */}
-        <div className="text-center mt-4">
-          <p className="text-xs text-gray-500">
-            By signing in, you agree to our{' '}
-            <Link href="/terms" className="text-blue-600 hover:underline">
-              Terms of Service
-            </Link>{' '}
-            and{' '}
-            <Link href="/privacy" className="text-blue-600 hover:underline">
-              Privacy Policy
-            </Link>
-          </p>
         </div>
       </div>
     </div>

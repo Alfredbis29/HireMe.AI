@@ -54,5 +54,29 @@
     "name": "Test User",
     "createdAt": "2025-10-15T23:20:42.702Z",
     "updatedAt": "2025-10-15T23:20:42.702Z"
+  },
+  {
+    "id": "1761247885860",
+    "email": "newuser@example.com",
+    "password": "$2b$12$4WoRvugi8EkQvXMk0jHu3uVE460ufjL4RNGJ39V2M9t1uaomw8e6W",
+    "name": "New User",
+    "createdAt": "2025-10-23T19:31:25.860Z",
+    "updatedAt": "2025-10-23T19:31:25.860Z"
+  },
+  {
+    "id": "1761248074577",
+    "email": "u@gmail.com",
+    "password": "$2b$12$wDXa.cY3plUoSlmJY13D0ukykWSI5r9KwjPF3Se4dmrj0bTyauhzq",
+    "name": "ug bro",
+    "createdAt": "2025-10-23T19:34:34.577Z",
+    "updatedAt": "2025-10-23T19:34:34.577Z"
+  },
+  {
+    "id": "1761249267520",
+    "email": "demo@hireme.ai",
+    "password": "$2b$12$SXPDj2YrFcFRHwB41eyC3ekR5EERFHDQ7y6GTd2OsnpA6wHQd0qlC",
+    "name": "Demo User",
+    "createdAt": "2025-10-23T19:54:27.520Z",
+    "updatedAt": "2025-10-23T19:54:27.520Z"
   }
 ]
