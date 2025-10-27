@@ -78,5 +78,13 @@
     "name": "Demo User",
     "createdAt": "2025-10-23T19:54:27.520Z",
     "updatedAt": "2025-10-23T19:54:27.520Z"
+  },
+  {
+    "id": "1761569431595",
+    "email": "ar@gmail.com",
+    "password": "$2b$12$tuy2X0/8104yuGYarnGmIOQDo0xj.RnDX1xPmW3Qm5EDEzqinrBC6",
+    "name": "arno mush",
+    "createdAt": "2025-10-27T12:50:31.595Z",
+    "updatedAt": "2025-10-27T12:50:31.595Z"
   }
 ]

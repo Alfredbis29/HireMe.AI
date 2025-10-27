@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import UserProfile from '@/components/UserProfile'
 import ResumeAnalyzer from '@/components/ResumeAnalyzer'
-import { ArrowRight, Brain, FileText, Target, Users, Zap, Lock, Upload } from 'lucide-react'
+import { ArrowRight, Brain, FileText, Target, Users, Zap, Lock, Upload, CheckCircle } from 'lucide-react' // ✅ added CheckCircle
 
 export default function Home() {
   return (
@@ -32,10 +32,10 @@ export default function Home() {
               {' '}AI-Powered Insights
             </span>
           </h1>
-              <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                Create your free account to access AI-powered resume analysis, personalized job recommendations, 
-                and career optimization suggestions to land your dream job.
-              </p>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Create your free account to access AI-powered resume analysis, personalized job recommendations, 
+            and career optimization suggestions to land your dream job.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link href="/signup">
               <Button size="lg" className="text-lg px-8 py-6">
@@ -60,108 +60,108 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-              <p className="text-sm text-gray-500 mb-8">
-                ✨ Create your free account to unlock AI-powered career insights!
-              </p>
+          <p className="text-sm text-gray-500 mb-8">
+            ✨ Create your free account to unlock AI-powered career insights!
+          </p>
         </div>
       </section>
 
-          {/* Authentication Required Section */}
-          <section className="container mx-auto px-4 py-12">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  Get Started with AI Resume Analysis
-                </h2>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Create your free account to access our AI-powered resume analysis, 
-                  personalized job recommendations, and career optimization insights.
-                </p>
+      {/* Authentication Required Section */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Get Started with AI Resume Analysis
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Create your free account to access our AI-powered resume analysis, 
+              personalized job recommendations, and career optimization insights.
+            </p>
+          </div>
+          
+          {/* Authentication Required Card */}
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Brain className="h-8 w-8 text-blue-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              🔒 Authentication Required
+            </h3>
+            <p className="text-lg text-gray-600 mb-6">
+              To protect your data and provide personalized analysis, 
+              you need to create a free account first.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="text-left">
+                <h4 className="font-semibold text-gray-900 mb-3">What you&apos;ll get:</h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    AI-powered resume analysis
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Personalized job recommendations
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Career optimization insights
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                    Secure data storage
+                  </li>
+                </ul>
               </div>
-              
-              {/* Authentication Required Card */}
-              <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Brain className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  🔒 Authentication Required
-                </h3>
-                <p className="text-lg text-gray-600 mb-6">
-                  To protect your data and provide personalized analysis, 
-                  you need to create a free account first.
-                </p>
-                
-                <div className="grid md:grid-cols-2 gap-6 mb-8">
-                  <div className="text-left">
-                    <h4 className="font-semibold text-gray-900 mb-3">What you'll get:</h4>
-                    <ul className="space-y-2 text-sm text-gray-600">
-                      <li className="flex items-center">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                        AI-powered resume analysis
-                      </li>
-                      <li className="flex items-center">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                        Personalized job recommendations
-                      </li>
-                      <li className="flex items-center">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                        Career optimization insights
-                      </li>
-                      <li className="flex items-center">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                        Secure data storage
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="text-left">
-                    <h4 className="font-semibold text-gray-900 mb-3">Why authentication?</h4>
-                    <ul className="space-y-2 text-sm text-gray-600">
-                      <li className="flex items-center">
-                        <Lock className="h-4 w-4 text-blue-500 mr-2" />
-                        Protect your personal data
-                      </li>
-                      <li className="flex items-center">
-                        <Lock className="h-4 w-4 text-blue-500 mr-2" />
-                        Save your analysis results
-                      </li>
-                      <li className="flex items-center">
-                        <Lock className="h-4 w-4 text-blue-500 mr-2" />
-                        Track your progress
-                      </li>
-                      <li className="flex items-center">
-                        <Lock className="h-4 w-4 text-blue-500 mr-2" />
-                        Personalized recommendations
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/signup">
-                    <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6">
-                      <Brain className="mr-2 h-5 w-5" />
-                      Create Free Account
-                    </Button>
-                  </Link>
-                  <Link href="/login">
-                    <Button 
-                      size="lg" 
-                      variant="outline" 
-                      className="w-full sm:w-auto text-lg px-8 py-6"
-                    >
-                      <ArrowRight className="mr-2 h-5 w-5" />
-                      Already have an account? Sign In
-                    </Button>
-                  </Link>
-                </div>
-                
-                <p className="text-sm text-gray-500 mt-6">
-                  ✨ It only takes 30 seconds to create your account and start optimizing your career!
-                </p>
+              <div className="text-left">
+                <h4 className="font-semibold text-gray-900 mb-3">Why authentication?</h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <Lock className="h-4 w-4 text-blue-500 mr-2" />
+                    Protect your personal data
+                  </li>
+                  <li className="flex items-center">
+                    <Lock className="h-4 w-4 text-blue-500 mr-2" />
+                    Save your analysis results
+                  </li>
+                  <li className="flex items-center">
+                    <Lock className="h-4 w-4 text-blue-500 mr-2" />
+                    Track your progress
+                  </li>
+                  <li className="flex items-center">
+                    <Lock className="h-4 w-4 text-blue-500 mr-2" />
+                    Personalized recommendations
+                  </li>
+                </ul>
               </div>
             </div>
-          </section>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/signup">
+                <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6">
+                  <Brain className="mr-2 h-5 w-5" />
+                  Create Free Account
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="w-full sm:w-auto text-lg px-8 py-6"
+                >
+                  <ArrowRight className="mr-2 h-5 w-5" />
+                  Already have an account? Sign In
+                </Button>
+              </Link>
+            </div>
+            
+            <p className="text-sm text-gray-500 mt-6">
+              ✨ It only takes 30 seconds to create your account and start optimizing your career!
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
@@ -268,10 +268,10 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-4">
             Want More Features?
           </h2>
-              <p className="text-xl mb-8 max-w-2xl mx-auto">
-                Join thousands of professionals who have already optimized their careers with AI. 
-                Create your free account to access all features and start your career transformation today.
-              </p>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Join thousands of professionals who have already optimized their careers with AI. 
+            Create your free account to access all features and start your career transformation today.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/signup">
               <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
@@ -296,9 +296,9 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-              <p className="text-sm text-blue-100 mt-6">
-                💡 Ready to transform your career? Create your free account now!
-              </p>
+          <p className="text-sm text-blue-100 mt-6">
+            💡 Ready to transform your career? Create your free account now!
+          </p>
         </div>
       </section>
 
