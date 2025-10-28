@@ -86,5 +86,21 @@
     "name": "arno mush",
     "createdAt": "2025-10-27T12:50:31.595Z",
     "updatedAt": "2025-10-27T12:50:31.595Z"
+  },
+  {
+    "id": "1761570690671",
+    "email": "p@gmail.com",
+    "password": "$2b$12$LBhcW05lsWFtOv7anwRpquV8tOSw2//4EE7gDXOqTj4mxyIPG1z1S",
+    "name": "alfa P ",
+    "createdAt": "2025-10-27T13:11:30.671Z",
+    "updatedAt": "2025-10-27T13:11:30.671Z"
+  },
+  {
+    "id": "1761645096558",
+    "email": "hu@gmail.com",
+    "password": "$2b$12$Bl/y4f05tYGqiZGzywrseuZU4pd/TxEzscLnPkZotyrAqnM4CotV2",
+    "name": "hugy bull",
+    "createdAt": "2025-10-28T09:51:36.558Z",
+    "updatedAt": "2025-10-28T09:51:36.558Z"
   }
 ]

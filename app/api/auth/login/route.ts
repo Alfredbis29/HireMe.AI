@@ -1,27 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { signIn } from 'next-auth/react'
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const { email, password } = await req.json()
+    const { email, password } = await request.json();
 
     if (!email || !password) {
-      return NextResponse.json({ success: false, message: 'Email and password are required' }, { status: 400 })
+      return NextResponse.json(
+        { error: "Email and password are required" },
+        { status: 400 }
+      );
     }
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password
-    })
-
-    if (result?.error) {
-      return NextResponse.json({ success: false, message: 'Invalid email or password' }, { status: 401 })
+    // Example: check credentials (replace this with your real logic)
+    if (email === "test@example.com" && password === "123456") {
+      return NextResponse.json(
+        { message: "Login successful", user: { email } },
+        { status: 200 }
+      );
     }
 
-    return NextResponse.json({ success: true, message: 'Login successful' })
-  } catch (err) {
-    console.error(err)
-    return NextResponse.json({ success: false, message: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+  } catch (error) {
+    console.error("Login API error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
