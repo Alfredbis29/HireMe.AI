@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { useResumeAnalysis } from '@/hooks/useResumeAnalysis'
+import JobSearch from '@/components/JobSearch'
 import { Brain, CheckCircle, AlertCircle, Target, TrendingUp } from 'lucide-react'
 
 export default function ResumeAnalyzer() {
@@ -215,34 +216,16 @@ export default function ResumeAnalyzer() {
             </CardContent>
           </Card>
 
-          {/* Job Matches */}
-          {analysis.jobMatches.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Recommended Job Opportunities</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {analysis.jobMatches.map((job, index) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold">{job.title}</h3>
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
-                          {job.matchScore}% match
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">{job.description}</p>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${job.matchScore}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          {/* LinkedIn Job Search */}
+          {analysis && (
+            <JobSearch 
+              resumeAnalysis={{
+                jobTitle: jobTitle || 'Software Engineer',
+                skills: analysis.skills,
+                experience: `${analysis.experience.years} years`,
+                location: industry
+              }}
+            />
           )}
         </div>
       )}

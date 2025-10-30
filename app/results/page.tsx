@@ -72,16 +72,17 @@ export default function ResultsPage() {
       setAnalysis(parsedAnalysis)
     }
     setLoading(false)
-current-post
+    
     if (parsedAnalysis) {
       setJobsLoading(true)
-      fetch('/api/jobs/search', {
+      fetch('/api/jobs/linkedin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           skills: parsedAnalysis.skills,
-          experience: parsedAnalysis.experience,
-          jobTitle: parsedAnalysis.jobMatches?.[0]?.title || ''
+          experience: parsedAnalysis.experience.years,
+          jobTitle: parsedAnalysis.jobMatches?.[0]?.title || '',
+          location: 'San Francisco'
         })
       })
         .then(res => res.json())
@@ -91,8 +92,6 @@ current-post
         .catch(err => console.error('Job suggestion fetch error:', err))
         .finally(() => setJobsLoading(false))
     }
-  }, [])
-
   }, [status])
 
   const getDemoAnalysis = (): AnalysisResult => ({
@@ -405,16 +404,10 @@ current-post
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Users className="mr-2 h-5 w-5" />
-                Current Job Suggestions
-              </CardTitle>
-              <CardDescription>
-                Jobs that match your latest profile and skills
-
                 Additional Job Matches
               </CardTitle>
               <CardDescription>
                 More opportunities that align with your profile
-
               </CardDescription>
             </CardHeader>
             <CardContent>

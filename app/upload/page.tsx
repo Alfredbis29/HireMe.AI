@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import UserProfile from '@/components/UserProfile'
+import ResumeAnalyzer from '@/components/ResumeAnalyzer'
 import { ArrowLeft, Brain, FileText, Upload, X } from 'lucide-react'
 
 export default function UploadPage() {
@@ -331,6 +332,19 @@ export default function UploadPage() {
               </form>
             </CardContent>
           </Card>
+
+          {/* Resume Analysis Section */}
+          <div className="mt-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Or Analyze Resume Text Directly
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Don't have a file? No problem! Paste your resume text below and get instant AI analysis with LinkedIn job recommendations.
+              </p>
+            </div>
+            <ResumeAnalyzer />
+          </div>
 
           {/* Features Preview */}
           <div className="mt-12 grid md:grid-cols-3 gap-6">

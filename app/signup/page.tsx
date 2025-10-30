@@ -1,44 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-
-export default function SignupPage() {
-  const [form, setForm] = useState({ email: '', password: '', name: '' })
-  const [error, setError] = useState('')
-  const router = useRouter()
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    })
-    const data = await res.json()
-    if (!res.ok) setError(data.error)
-    else router.push('/login')
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md bg-white p-8 rounded shadow">
-        <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full p-2 border rounded" />
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full p-2 border rounded" />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full p-2 border rounded" />
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-        <Button type="submit" className="w-full">Sign Up</Button>
-        <Link href="/login" className="block text-center text-blue-600 mt-2">Already have an account? Sign In</Link>
-      </form>
-
-import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -119,10 +80,10 @@ export default function SignUpPage() {
 
       if (signInResult?.error) {
         setError('Account created but failed to sign in. Please try signing in manually.')
-      } else {
+      } else if (signInResult?.ok) {
         setSuccess(true)
         setTimeout(() => {
-          router.push('/')
+          router.push('/upload') // Redirect to upload page after successful signup and auto-login
           router.refresh()
         }, 2000)
       }
@@ -141,7 +102,7 @@ export default function SignUpPage() {
       
       const result = await signIn('google', {
         redirect: false,
-        callbackUrl: '/'
+        callbackUrl: '/upload' // Redirect to upload page after successful Google signup
       })
 
       if (result?.error) {
@@ -149,7 +110,7 @@ export default function SignUpPage() {
       } else if (result?.ok) {
         setSuccess(true)
         setTimeout(() => {
-          router.push('/')
+          router.push('/upload') // Redirect to upload page after successful Google signup
           router.refresh()
         }, 2000)
       }
@@ -174,7 +135,7 @@ export default function SignUpPage() {
                 Welcome to HireMe.AI!
               </h1>
               <p className="text-gray-600 mb-6">
-                Your account has been created successfully. Redirecting you to the dashboard...
+                Your account has been created successfully. Redirecting you to the upload page...
               </p>
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             </CardContent>
