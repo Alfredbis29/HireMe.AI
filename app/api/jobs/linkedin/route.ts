@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     const { jobTitle, location, skills, experience } = await request.json()
-    
+
     // Mock job data - In production, this would come from LinkedIn's API
     const mockJobs = [
       {
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       }
     ]
 
-    // Filter jobs based on skills and experience
+    `// Filter jobs based on skills and experience`
     const filteredJobs = mockJobs.filter(job => {
       if (skills && skills.length > 0) {
         const jobSkills = job.skills.map(s => s.toLowerCase())

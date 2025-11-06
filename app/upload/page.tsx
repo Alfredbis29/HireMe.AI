@@ -59,7 +59,6 @@ export default function UploadPage() {
               This ensures your data is secure and personalized to your account.
             </p>
           </div>
-          
           <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               What you&apos;ll get with an account:
@@ -83,7 +82,6 @@ export default function UploadPage() {
               </div>
             </div>
           </div>
-          
           <div className="space-y-4">
             <Link href="/signup">
               <Button size="lg" className="w-full text-lg py-6">
@@ -120,7 +118,6 @@ export default function UploadPage() {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0]
       if (droppedFile.type === 'application/pdf' || droppedFile.type === 'application/msword' || droppedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
@@ -179,10 +176,10 @@ export default function UploadPage() {
       }
 
       const result = await response.json()
-      
+
       // Complete progress
       setUploadProgress(100)
-      
+
       // Redirect to results page with the analysis data
       router.push(`/results?analysis=${encodeURIComponent(JSON.stringify(result))}`)
     } catch (error) {
@@ -207,7 +204,7 @@ export default function UploadPage() {
             <div className="flex items-center space-x-4">
               <Link href="/">
                 <Button variant="outline">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  <ArrowLeft className="mr-2 h-4 w-4"/>
                   Back to Home
                 </Button>
               </Link>
@@ -268,7 +265,6 @@ export default function UploadPage() {
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       disabled={isUploading}
                     />
-                    
                     {file ? (
                       <div className="space-y-2">
                         <FileText className="mx-auto h-12 w-12 text-green-500" />
@@ -359,7 +355,6 @@ export default function UploadPage() {
                 </p>
               </CardContent>
             </Card>
-
             <Card className="border-0 shadow-md">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
