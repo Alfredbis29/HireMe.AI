@@ -37,7 +37,7 @@ interface ResumeAnalysisResponse {
 export async function POST(request: NextRequest) {
   try {
     console.log('📤 Upload API called')
-    
+
     // Require authentication
     const session = await getServerSession(authOptions)
     if (!session || !session.user) {
@@ -47,13 +47,13 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-    
+
     // Check content type
     const contentType = request.headers.get('content-type') || ''
     console.log('Content-Type:', contentType)
-    
+
     let file: File | null = null
-    
+
     if (contentType.includes('multipart/form-data')) {
       // Handle file upload
       const formData = await request.formData()
@@ -143,11 +143,11 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Analysis complete, returning results')
     return NextResponse.json(mockAnalysis)
-    
+
   } catch (error) {
     console.error('❌ Error analyzing resume:', error)
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to analyze resume',
         details: error instanceof Error ? error.message : 'Unknown error'
       },

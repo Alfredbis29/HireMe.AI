@@ -102,5 +102,29 @@
     "name": "hugy bull",
     "createdAt": "2025-10-28T09:51:36.558Z",
     "updatedAt": "2025-10-28T09:51:36.558Z"
+  },
+  {
+    "id": "1761654487118",
+    "email": "eli@gmail.com",
+    "password": "$2b$12$rprCl52NV5RQA8ytl.rB4Ocwk/iiWzc4INKQAqkpmvGxVMkqwKsuu",
+    "name": "Elie Bull",
+    "createdAt": "2025-10-28T12:28:07.119Z",
+    "updatedAt": "2025-10-28T12:28:07.119Z"
+  },
+  {
+    "id": "1761657094360",
+    "email": "pac@gmail.com",
+    "password": "$2b$12$sHJUNS/5fzRvkNxzrY3XxeBNfJUjd9ck7O9XyDIMuwTKzj2yB0V9a",
+    "name": "Pac Nav",
+    "createdAt": "2025-10-28T13:11:34.360Z",
+    "updatedAt": "2025-10-28T13:11:34.360Z"
+  },
+  {
+    "id": "1761657534352",
+    "email": "test@gmail.com",
+    "password": "$2b$12$znLC55hskXmfZ9kmPo8FB.HhqF6.NmZTZ4OwHiKkYh6O5oAlyJYd2",
+    "name": "TESt",
+    "createdAt": "2025-10-28T13:18:54.352Z",
+    "updatedAt": "2025-10-28T13:18:54.352Z"
   }
 ]
