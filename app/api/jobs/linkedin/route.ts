@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       if (skills && skills.length > 0) {
         const jobSkills = job.skills.map((s: string) => s.toLowerCase())
         const userSkills = skills.map((s: string) => s.toLowerCase())
-        return userSkills.some(skill => jobSkills.some(jobSkill => jobSkill.includes(skill)))
+        return userSkills.some((skill: string) => jobSkills.some((jobSkill: string) => jobSkill.includes(skill)))
       }
       return true
     })
