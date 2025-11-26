@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
@@ -8,9 +9,8 @@ export async function GET(request: NextRequest) {
 
     // Test session
     const session = await getServerSession(authOptions)
-    console.log('📊 Session from getServerSession:', session)    // Test headers
-    const headers = request.headers
-    const cookies = headers.get('cookie')
+    console.log('📊 Session from getServerSession:', session)
+    const cookies = headers().get('cookie')
     console.log('🍪 Cookies:', cookies)
 
     // Check for NextAuth cookies
