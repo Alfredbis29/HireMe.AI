@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { findUserByEmail, verifyPassword } from "@/lib/db-hybrid";
 
 export async function POST(request: Request) {
   try {
@@ -11,15 +12,37 @@ export async function POST(request: Request) {
       );
     }
 
-    // Example: check credentials (replace this with your real logic)
-    if (email === "test@example.com" && password === "123456") {
+    // Find user in database
+    const user = await findUserByEmail(email);
+    
+    if (!user) {
       return NextResponse.json(
-        { message: "Login successful", user: { email } },
-        { status: 200 }
+        { error: "Invalid credentials" },
+        { status: 401 }
       );
     }
 
-    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    // Verify password
+    const isValidPassword = await verifyPassword(password, user.password);
+    
+    if (!isValidPassword) {
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json(
+      { 
+        message: "Login successful", 
+        user: { 
+          id: user.id,
+          email: user.email, 
+          name: user.name 
+        } 
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Login API error:", error);
     return NextResponse.json(

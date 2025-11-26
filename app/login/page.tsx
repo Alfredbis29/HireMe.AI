@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -30,19 +31,38 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true)
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
       })
-      const data = await res.json()
 
-      if (!res.ok) setError(data.message || 'Login failed')
-      else router.push('/upload')
+      if (result?.error) {
+        setError('Invalid email or password')
+      } else if (result?.ok) {
+        router.push('/upload')
+        router.refresh()
+      }
     } catch (err) {
       console.error(err)
       setError('An unexpected error occurred. Please try again.')
     } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true)
+      setError('')
+      
+      await signIn('google', {
+        callbackUrl: '/upload'
+      })
+    } catch (error) {
+      console.error('Google sign in error:', error)
+      setError('Failed to sign in with Google. Please try again.')
       setIsLoading(false)
     }
   }
@@ -126,7 +146,7 @@ export default function LoginPage() {
             )}
 
             <Button
-              onClick={() => window.location.href = '/auth/google'}
+              onClick={handleGoogleSignIn}
               disabled={isLoading}
               className="w-full h-12 text-base font-medium mt-4"
               variant="outline"
