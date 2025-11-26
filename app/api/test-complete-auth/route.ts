@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createUser, findUserByEmail, verifyPassword } from '@/lib/db-hybrid'
+import { createUser, findUserByEmail, verifyPassword } from '@/lib/db-memory'
 
 export async function POST(request: NextRequest) {
   try {
