@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       }
     ]
 
-    `// Filter jobs based on skills and experience`
+    // Filter jobs based on skills and experience
     const filteredJobs = mockJobs.filter(job => {
       if (skills && skills.length > 0) {
         const jobSkills = job.skills.map(s => s.toLowerCase())
