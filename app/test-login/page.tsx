@@ -74,7 +74,7 @@ export default function TestLoginPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold">🔍 Login Debug Tool</h1>
-        
+
         {/* Current Status */}
         <Card>
           <CardHeader>

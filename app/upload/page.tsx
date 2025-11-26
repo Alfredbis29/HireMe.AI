@@ -179,7 +179,6 @@ export default function UploadPage() {
 
       // Complete progress
       setUploadProgress(100)
-
       // Redirect to results page with the analysis data
       router.push(`/results?analysis=${encodeURIComponent(JSON.stringify(result))}`)
     } catch (error) {
