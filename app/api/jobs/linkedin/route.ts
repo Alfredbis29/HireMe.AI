@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     const filteredJobs = mockJobs.filter((job: any) => {
       if (skills && skills.length > 0) {
         const jobSkills = job.skills.map((s: string) => s.toLowerCase())
-        const userSkills = skills.map(s => s.toLowerCase())
+        const userSkills = skills.map((s: string) => s.toLowerCase())
         return userSkills.some(skill => jobSkills.some(jobSkill => jobSkill.includes(skill)))
       }
       return true
