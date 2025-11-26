@@ -6,19 +6,17 @@ export async function GET(request: NextRequest) {
   try {
     console.log('🧪 Testing complete auth flow...')
 
-    // Test session
     const session = await getServerSession(authOptions)
     console.log('📊 Session from getServerSession:', session)    // Test headers
     const headers = request.headers
     const cookies = headers.get('cookie')
     console.log('🍪 Cookies:', cookies)
 
-    // Check for NextAuth cookies
     const hasSessionToken = cookies?.includes('next-auth.session-token') ||
                            cookies?.includes('__Secure-next-auth.session-token')
     console.log('🔐 Has session token:', hasSessionToken)
 
-    // Test if we can get session with cookies
+  
     if (cookies) {
       const sessionWithCookies = await getServerSession(authOptions)
       console.log('📊 Session with cookies:', sessionWithCookies)
