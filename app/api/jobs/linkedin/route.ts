@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Sort by match score
-    const sortedJobs = filteredJobs.sort((a, b) => b.matchScore - a.matchScore)
+    const sortedJobs = filteredJobs.sort((a: any, b: any) => b.matchScore - a.matchScore)
 
     return NextResponse.json({
       success: true,
