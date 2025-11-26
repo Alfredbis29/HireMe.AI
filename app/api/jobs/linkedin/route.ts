@@ -109,18 +109,18 @@ export async function POST(request: NextRequest) {
       }
     ]
 
-    `// Filter jobs based on skills and experience`
-    const filteredJobs = mockJobs.filter(job => {
+    // Filter jobs based on skills and experience
+    const filteredJobs = mockJobs.filter((job: any) => {
       if (skills && skills.length > 0) {
-        const jobSkills = job.skills.map(s => s.toLowerCase())
-        const userSkills = skills.map(s => s.toLowerCase())
-        return userSkills.some(skill => jobSkills.some(jobSkill => jobSkill.includes(skill)))
+        const jobSkills = job.skills.map((s: any) => String(s).toLowerCase())
+        const userSkills = skills.map((s: any) => String(s).toLowerCase())
+        return userSkills.some((skill: string) => jobSkills.some((jobSkill: string) => jobSkill.includes(skill)))
       }
       return true
     })
 
     // Sort by match score
-    const sortedJobs = filteredJobs.sort((a, b) => b.matchScore - a.matchScore)
+  const sortedJobs = filteredJobs.sort((a: any, b: any) => b.matchScore - a.matchScore)
 
     return NextResponse.json({
       success: true,
