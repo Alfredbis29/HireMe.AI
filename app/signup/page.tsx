@@ -80,17 +80,19 @@ export default function SignUpPage() {
 
       if (signInResult?.error) {
         setError('Account created but failed to sign in. Please try signing in manually.')
+        setIsLoading(false)
       } else if (signInResult?.ok) {
         setSuccess(true)
         setTimeout(() => {
           router.push('/upload') // Redirect to upload page after successful signup and auto-login
           router.refresh()
         }, 2000)
+        // Don't set isLoading to false - success state handles UI
+        return
       }
     } catch (error) {
       console.error('Registration error:', error)
       setError(error instanceof Error ? error.message : 'Registration failed')
-    } finally {
       setIsLoading(false)
     }
   }

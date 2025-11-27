@@ -40,14 +40,19 @@ export default function LoginPage() {
 
       if (result?.error) {
         setError('Invalid email or password')
+        setIsLoading(false)
       } else if (result?.ok) {
-        router.push('/upload')
-        router.refresh()
+        // Keep loading state during redirect delay to prevent UI flicker
+        setTimeout(() => {
+          router.push('/upload')
+          router.refresh()
+        }, 500)
+        // Don't set isLoading to false - let the redirect happen while showing loading state
+        return
       }
     } catch (err) {
       console.error(err)
       setError('An unexpected error occurred. Please try again.')
-    } finally {
       setIsLoading(false)
     }
   }
