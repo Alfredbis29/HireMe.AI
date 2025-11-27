@@ -18,8 +18,8 @@ export const createUser = async (email: string, password: string, name: string):
   try {
     console.log('🧠 Memory DB: Creating user:', { email, name })
     
-    // Check if user already exists
-    if (users.find(user => user.email === email)) {
+    // Check if user already exists (case-insensitive)
+    if (users.find(user => user.email.toLowerCase() === email.toLowerCase())) {
       console.log('❌ Memory DB: User already exists')
       throw new Error('User already exists')
     }
@@ -46,10 +46,10 @@ export const createUser = async (email: string, password: string, name: string):
   }
 }
 
-// Find user by email
+// Find user by email (case-insensitive)
 export const findUserByEmail = (email: string): User | null => {
   console.log('🧠 Memory DB: Looking for user:', email)
-  const user = users.find(user => user.email === email)
+  const user = users.find(user => user.email.toLowerCase() === email.toLowerCase())
   console.log('🧠 Memory DB: User found:', user ? 'Yes' : 'No')
   return user || null
 }

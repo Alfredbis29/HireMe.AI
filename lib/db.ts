@@ -52,8 +52,8 @@ export const createUser = async (email: string, password: string, name: string):
     const users = getUsers()
     console.log('📁 Local DB: Current users count:', users.length)
     
-    // Check if user already exists
-    if (users.find(user => user.email === email)) {
+    // Check if user already exists (case-insensitive)
+    if (users.find(user => user.email.toLowerCase() === email.toLowerCase())) {
       console.log('❌ Local DB: User already exists')
       throw new Error('User already exists')
     }
@@ -82,10 +82,10 @@ export const createUser = async (email: string, password: string, name: string):
   }
 }
 
-// Find user by email
+// Find user by email (case-insensitive)
 export const findUserByEmail = (email: string): User | null => {
   const users = getUsers()
-  return users.find(user => user.email === email) || null
+  return users.find(user => user.email.toLowerCase() === email.toLowerCase()) || null
 }
 
 // Find user by ID
