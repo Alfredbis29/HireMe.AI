@@ -11,11 +11,33 @@ export interface User {
   updatedAt: string
 }
 
-// Check if we're in a serverless environment
+// Check if we're in a serverless environment (Vercel)
 const isServerless = () => {
-  // Always return false so we use the file-based DB even in serverless/production
-  return false
+  return process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined
 }
+
+// Demo user password hash for "demo123"
+const DEMO_PASSWORD_HASH = '$2b$12$/wmvm9gn5NNaPAfgBCuPiuENv8KDOTVmNf5LK6fthH/l/eW20srdW'
+
+// Demo users that always exist (for testing on Vercel)
+const DEMO_USERS: User[] = [
+  {
+    id: 'demo-1',
+    email: 'demo@hireme.ai',
+    password: DEMO_PASSWORD_HASH, // password: demo123
+    name: 'Demo User',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'demo-2', 
+    email: 'test@example.com',
+    password: DEMO_PASSWORD_HASH, // password: demo123
+    name: 'Test User',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+]
 
 // Create a new user
 export const createUser = async (email: string, password: string, name: string): Promise<User> => {
@@ -42,6 +64,13 @@ export const createUser = async (email: string, password: string, name: string):
 
 // Find user by email
 export const findUserByEmail = async (email: string): Promise<User | null> => {
+  // First check demo users (always available)
+  const demoUser = DEMO_USERS.find(u => u.email.toLowerCase() === email.toLowerCase())
+  if (demoUser) {
+    console.log('🎭 Found demo user:', email)
+    return demoUser
+  }
+
   if (isServerless()) {
     console.log('☁️ Serverless environment, using memory database')
     return memoryDb.findUserByEmail(email)
