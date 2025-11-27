@@ -78,16 +78,24 @@ export default function SignUpPage() {
         redirect: false,
       })
 
+      console.log('SignIn result after registration:', signInResult)
+      
       if (signInResult?.error) {
         setError('Account created but failed to sign in. Please try signing in manually.')
         setIsLoading(false)
       } else if (signInResult?.ok) {
         setSuccess(true)
+        // Use window.location for hard redirect after showing success message
         setTimeout(() => {
-          router.push('/upload') // Redirect to upload page after successful signup and auto-login
-          router.refresh()
+          window.location.href = '/upload'
         }, 2000)
-        // Don't set isLoading to false - success state handles UI
+        return
+      } else {
+        // Account created, try redirect anyway
+        setSuccess(true)
+        setTimeout(() => {
+          window.location.href = '/upload'
+        }, 2000)
         return
       }
     } catch (error) {

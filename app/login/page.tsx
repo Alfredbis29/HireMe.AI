@@ -38,20 +38,23 @@ export default function LoginPage() {
         redirect: false,
       })
 
+      console.log('SignIn result:', result)
+      
       if (result?.error) {
         setError('Invalid email or password')
         setIsLoading(false)
       } else if (result?.ok) {
-        // Keep loading state during redirect delay to prevent UI flicker
-        setTimeout(() => {
-          router.push('/upload')
-          router.refresh()
-        }, 500)
-        // Don't set isLoading to false - let the redirect happen while showing loading state
+        // Use window.location for a hard redirect to ensure session is picked up
+        window.location.href = '/upload'
+        return
+      } else {
+        // Unexpected state - still try to redirect
+        console.log('Unexpected signIn state, attempting redirect anyway')
+        window.location.href = '/upload'
         return
       }
     } catch (err) {
-      console.error(err)
+      console.error('Login error:', err)
       setError('An unexpected error occurred. Please try again.')
       setIsLoading(false)
     }
