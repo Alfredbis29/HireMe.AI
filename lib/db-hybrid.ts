@@ -64,25 +64,36 @@ export const createUser = async (email: string, password: string, name: string):
 
 // Find user by email
 export const findUserByEmail = async (email: string): Promise<User | null> => {
-  // First check demo users (always available)
+  // Check database first - real users take precedence over demo users
+  let dbUser: User | null = null
+  
+  if (isServerless()) {
+    console.log('☁️ Serverless environment, using memory database')
+    dbUser = await memoryDb.findUserByEmail(email)
+  } else {
+    console.log('💻 Local environment, trying local database')
+    try {
+      dbUser = await localDb.findUserByEmail(email)
+    } catch (error) {
+      console.log('❌ Local database failed, falling back to memory database')
+      dbUser = await memoryDb.findUserByEmail(email)
+    }
+  }
+  
+  // If found in database, return the real user
+  if (dbUser) {
+    console.log('✅ Found user in database:', email)
+    return dbUser
+  }
+  
+  // Fall back to demo users only if no real user exists
   const demoUser = DEMO_USERS.find(u => u.email.toLowerCase() === email.toLowerCase())
   if (demoUser) {
     console.log('🎭 Found demo user:', email)
     return demoUser
   }
-
-  if (isServerless()) {
-    console.log('☁️ Serverless environment, using memory database')
-    return memoryDb.findUserByEmail(email)
-  } else {
-    console.log('💻 Local environment, trying local database')
-    try {
-      return localDb.findUserByEmail(email)
-    } catch (error) {
-      console.log('❌ Local database failed, falling back to memory database')
-      return memoryDb.findUserByEmail(email)
-    }
-  }
+  
+  return null
 }
 
 // Find user by ID
@@ -105,3 +116,4 @@ export const findUserById = async (id: string): Promise<User | null> => {
 export const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
   return await bcrypt.compare(password, hashedPassword)
 }
+
