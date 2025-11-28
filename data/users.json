@@ -126,5 +126,21 @@
     "name": "TESt",
     "createdAt": "2025-10-28T13:18:54.352Z",
     "updatedAt": "2025-10-28T13:18:54.352Z"
+  },
+  {
+    "id": "1764264830541",
+    "email": "g@gmail.com",
+    "password": "$2b$12$dasurjJ6AHrilIW1TN4IOegrJFEUm0P3mXnNGiVjB5T49F1VS/e6a",
+    "name": "googo",
+    "createdAt": "2025-11-27T17:33:50.541Z",
+    "updatedAt": "2025-11-27T17:33:50.541Z"
+  },
+  {
+    "id": "1764318210383",
+    "email": "ad@gmail.com",
+    "password": "$2b$12$QCt26v3NxjnrkneSyVTzCuBvpZUEqx8KmIJHXOD/HZptI8Vu8G1he",
+    "name": "adrea ",
+    "createdAt": "2025-11-28T08:23:30.383Z",
+    "updatedAt": "2025-11-28T08:23:30.383Z"
   }
 ]
