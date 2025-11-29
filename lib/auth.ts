@@ -20,19 +20,32 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
+        console.log('🚀 Auth: authorize called with email:', credentials?.email)
+        console.log('🌍 Environment:', process.env.VERCEL ? 'Vercel' : 'Local', '| NODE_ENV:', process.env.NODE_ENV)
+        
         if (!credentials?.email || !credentials?.password) {
+          console.log('❌ Auth: Missing credentials')
           return null
         }
 
         try {
           console.log('🔍 Auth: Looking for user:', credentials.email)
           const user = await findUserByEmail(credentials.email)
-          console.log('👤 Auth: User found:', user ? 'Yes' : 'No')
-          if (!user) return null
+          console.log('👤 Auth: User found:', user ? `Yes (id: ${user.id})` : 'No')
+          
+          if (!user) {
+            console.log('❌ Auth: User not found for email:', credentials.email)
+            return null
+          }
 
           console.log('🔐 Auth: Verifying password...')
           const isValidPassword = await verifyPassword(credentials.password, user.password)
-          if (!isValidPassword) return null
+          console.log('🔐 Auth: Password valid:', isValidPassword)
+          
+          if (!isValidPassword) {
+            console.log('❌ Auth: Invalid password for:', credentials.email)
+            return null
+          }
 
           console.log('✅ Auth: Authentication successful for:', user.email)
           return { id: user.id, email: user.email, name: user.name }
@@ -78,8 +91,9 @@ export const authOptions: NextAuthOptions = {
   },
   session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
   jwt: { maxAge: 30 * 24 * 60 * 60 },
-  secret: process.env.NEXTAUTH_SECRET || (process.env.NODE_ENV !== 'production' ? 'dev-secret-change-me' : undefined),
-  debug: process.env.NODE_ENV === 'development',
+  // IMPORTANT: NEXTAUTH_SECRET must be set in production environment variables
+  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-development-only-change-in-production',
+  debug: true, // Enable debug temporarily to diagnose issues
 }
 
 
