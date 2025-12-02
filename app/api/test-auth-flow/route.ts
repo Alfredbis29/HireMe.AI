@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
                            cookies?.includes('__Secure-next-auth.session-token')
     console.log('🔐 Has session token:', hasSessionToken)
 
-  
+
     if (cookies) {
       const sessionWithCookies = await getServerSession(authOptions)
       console.log('📊 Session with cookies:', sessionWithCookies)
