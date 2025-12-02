@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Mock LinkedIn job search API - In production, you would use LinkedIn's official API
 export async function POST(request: NextRequest) {
   try {
     const { jobTitle, location, skills, experience } = await request.json()
