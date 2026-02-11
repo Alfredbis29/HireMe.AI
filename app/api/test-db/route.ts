@@ -18,7 +18,8 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Database test successful',
       userId: testUser.id,
-      foundUser: foundUser?.id
+      foundUser: foundUser?.id,
+      email: foundUser?.email
     })
 
   } catch (error) {
