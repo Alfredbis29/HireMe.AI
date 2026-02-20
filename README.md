@@ -317,3 +317,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [⭐ Star this repo](https://github.com/Alfredbis29/HireMe.AI) • [🐛 Report Bug](https://github.com/Alfredbis29/HireMe.AI/issues) • [💡 Request Feature](https://github.com/Alfredbis29/HireMe.AI/issues)
 
 </div>
+
+- Branch: test branch for feature testing
