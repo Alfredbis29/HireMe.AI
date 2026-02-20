@@ -552,3 +552,7 @@ For issues or questions:
 - Check the [GitHub Issues](https://github.com/Alfredbis29/HireMe.AI/issues)
 - Review documentation in `/docs`
 - Check environment validation errors
+
+## Test Suite
+
+Comprehensive testing framework for authentication and job matching features.
