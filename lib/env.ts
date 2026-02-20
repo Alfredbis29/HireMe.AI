@@ -66,8 +66,8 @@ export const validateEnvironment = (): EnvironmentConfig => {
 
   return {
     node_env: nodeEnv,
-    nextAuthSecret,
-    nextAuthUrl,
+    nextAuthSecret: nextAuthSecret as string,
+    nextAuthUrl: nextAuthUrl as string,
     databaseUrl: process.env.DATABASE_URL,
     openaiApiKey,
     googleClientId: process.env.GOOGLE_CLIENT_ID,

@@ -1,7 +1,6 @@
 // Example usage of the Resume Analysis API
 
 import { analyzeResume } from './api'
-import { ResumeAnalysisResponse } from '@/types/resume'
 
 // Example 1: Basic resume analysis
 export async function analyzeBasicResume() {

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { createUser, findUserByEmail, verifyPassword } from '@/lib/db-memory'
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     console.log('🧪 Testing complete authentication flow...')
     

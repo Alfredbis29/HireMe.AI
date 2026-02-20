@@ -142,5 +142,13 @@
     "name": "adrea ",
     "createdAt": "2025-11-28T08:23:30.383Z",
     "updatedAt": "2025-11-28T08:23:30.383Z"
+  },
+  {
+    "id": "1771585667052",
+    "email": "ui@gmail.com",
+    "password": "$2b$12$b4UxRZAvr4lMW35ysNKMV.WqdQzhug3cAqA6zaaTirYGQIGNMN.Qq",
+    "name": "ad",
+    "createdAt": "2026-02-20T11:07:47.052Z",
+    "updatedAt": "2026-02-20T11:07:47.052Z"
   }
 ]
