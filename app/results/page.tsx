@@ -431,7 +431,7 @@ export default function ResultsPage() {
                       <p className="text-sm text-gray-600 mb-2">{job.description}</p>
                       {job.matchScore && (
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-green-500 h-2 rounded-full transition-all duration-300"
                             style={{ width: `${job.matchScore}%` }}
                           ></div>
