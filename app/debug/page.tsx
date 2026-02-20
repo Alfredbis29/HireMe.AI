@@ -84,8 +84,7 @@ export default function DebugPage() {
 
         {/* Test Authentication System */}
         <Card>
-          <CardHeader>
-            <CardTitle>Test Authentication System</CardTitle>
+          <CardHeader>            <CardTitle>Test Authentication System</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Button onClick={testAuthSystem} disabled={isLoading}>
