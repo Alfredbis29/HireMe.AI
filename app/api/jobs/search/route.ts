@@ -113,81 +113,10 @@ async function fetchLinkedInJobs(params: {
   }
 }
 
-// Build LinkedIn search query
-function buildLinkedInSearchQuery(skills: string[], experience: number, location?: string, jobTitle?: string): string {
-  const skillQuery = skills.slice(0, 3).join(' ')
-  const experienceQuery = experience > 5 ? 'Senior' : experience > 2 ? 'Mid' : 'Junior'
-  const locationQuery = location ? ` ${location}` : ''
-  const titleQuery = jobTitle ? ` ${jobTitle}` : ''
-  
-  return `${experienceQuery}${titleQuery} ${skillQuery}${locationQuery}`.trim()
-}
 
-// Transform LinkedIn jobs to our format
-function transformLinkedInJobs(linkedinJobs: any[]): JobListing[] {
-  return linkedinJobs.map((job, index) => ({
-    id: `linkedin-${index + 1}`,
-    title: job.title || 'Software Developer',
-    company: job.company || 'Tech Company',
-    location: job.location || 'Various Locations',
-    type: job.type || 'Full-time',
-    salary: job.salary,
-    description: job.description || 'Join our development team and work on exciting projects.',
-    requirements: job.requirements || ['Programming experience', 'Problem solving', 'Team work'],
-    skills: job.skills || ['JavaScript', 'Python', 'SQL'],
-    postedDate: job.postedDate || new Date().toISOString().split('T')[0],
-    applyUrl: job.applyUrl || 'https://linkedin.com/jobs',
-    linkedinUrl: job.linkedinUrl || 'https://linkedin.com'
-  }))
-}
-
-// Extract requirements from job description
-function extractRequirements(description: string): string[] {
-  const commonRequirements = [
-    'Bachelor\'s degree',
-    'Programming experience',
-    'Problem solving',
-    'Team work',
-    'Communication skills',
-    'Attention to detail'
-  ]
-  
-  return commonRequirements.slice(0, Math.floor(Math.random() * 3) + 2)
-}
-
-// Extract skills from job description
-function extractSkills(description: string): string[] {
-  const allSkills = [
-    'JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'SQL', 'Git',
-    'HTML', 'CSS', 'TypeScript', 'AWS', 'Docker', 'MongoDB', 'Express'
-  ]
-  
-  return allSkills.slice(0, Math.floor(Math.random() * 5) + 3)
-}
-
-// Get current date and calculate dates for recent jobs
-function getRecentDates() {
-  const now = new Date()
-  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000)
-  const fourDaysAgo = new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000)
-  const sixDaysAgo = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
-  const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000)
-  
-  return {
-    today: now.toISOString().split('T')[0],
-    oneDayAgo: oneDayAgo.toISOString().split('T')[0],
-    twoDaysAgo: twoDaysAgo.toISOString().split('T')[0],
-    fourDaysAgo: fourDaysAgo.toISOString().split('T')[0],
-    sixDaysAgo: sixDaysAgo.toISOString().split('T')[0],
-    oneWeekAgo: oneWeekAgo.toISOString().split('T')[0]
-  }
-}
 
 // Get mock jobs as fallback with recent dates
 function getMockJobs(): JobListing[] {
-  const dates = getRecentDates()
-  
   return [
     {
       id: '1',
@@ -199,7 +128,7 @@ function getMockJobs(): JobListing[] {
       description: 'We are looking for a Senior Software Engineer to join our growing team. You will be responsible for developing and maintaining our core platform.',
       requirements: ['5+ years experience', 'JavaScript', 'React', 'Node.js', 'Leadership skills'],
       skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'AWS'],
-      postedDate: dates.oneDayAgo, // Posted 1 day ago
+      postedDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Posted 1 day ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Senior%20Software%20Engineer%20JavaScript%20React',
       linkedinUrl: 'https://linkedin.com/company/techcorp'
     },
@@ -213,7 +142,7 @@ function getMockJobs(): JobListing[] {
       description: 'Join our dynamic team building the next generation of web applications. We use modern technologies and agile methodologies.',
       requirements: ['3+ years experience', 'JavaScript', 'React', 'Node.js', 'Database design'],
       skills: ['JavaScript', 'React', 'Node.js', 'MongoDB', 'Express'],
-      postedDate: dates.twoDaysAgo, // Posted 2 days ago
+      postedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Posted 2 days ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer%20JavaScript%20React',
       linkedinUrl: 'https://linkedin.com/company/startupxyz'
     },
@@ -227,7 +156,7 @@ function getMockJobs(): JobListing[] {
       description: 'Create beautiful and responsive user interfaces for our clients. Work with modern frontend frameworks and tools.',
       requirements: ['2+ years experience', 'JavaScript', 'React', 'CSS', 'UI/UX'],
       skills: ['JavaScript', 'React', 'CSS', 'HTML', 'Figma'],
-      postedDate: dates.fourDaysAgo, // Posted 4 days ago
+      postedDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Posted 4 days ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Frontend%20Developer%20React%20JavaScript',
       linkedinUrl: 'https://linkedin.com/company/digital-agency'
     },
@@ -241,7 +170,7 @@ function getMockJobs(): JobListing[] {
       description: 'Design and implement scalable backend systems. Work with microservices architecture and cloud technologies.',
       requirements: ['4+ years experience', 'Node.js', 'Python', 'Database design', 'API development'],
       skills: ['Node.js', 'Python', 'PostgreSQL', 'Docker', 'AWS'],
-      postedDate: dates.sixDaysAgo, // Posted 6 days ago
+      postedDate: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Posted 6 days ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Backend%20Developer%20Node.js%20Python',
       linkedinUrl: 'https://linkedin.com/company/enterprise-solutions'
     },
@@ -255,7 +184,7 @@ function getMockJobs(): JobListing[] {
       description: 'Join our research and development team working on cutting-edge technologies. Great opportunity for growth and learning.',
       requirements: ['3+ years experience', 'JavaScript', 'React', 'Problem solving', 'Team collaboration'],
       skills: ['JavaScript', 'React', 'TypeScript', 'Git', 'Agile'],
-      postedDate: dates.oneWeekAgo, // Posted 1 week ago
+      postedDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Posted 1 week ago
       applyUrl: 'https://linkedin.com/jobs/search/?keywords=Software%20Engineer%20JavaScript%20React',
       linkedinUrl: 'https://linkedin.com/company/innovation-labs'
     }

@@ -42,7 +42,7 @@ interface AnalysisResult {
 }
 
 export default function ResultsPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(true)
   const [jobSuggestions, setJobSuggestions] = useState<AnalysisResult['jobMatches']>([])

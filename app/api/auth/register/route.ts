@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import bcrypt from 'bcryptjs'
 import { createUser, findUserByEmail } from '@/lib/db-hybrid'
 
 export async function POST(request: NextRequest) {

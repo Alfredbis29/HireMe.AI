@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import UserProfile from '@/components/UserProfile'
-import ResumeAnalyzer from '@/components/ResumeAnalyzer'
-import { ArrowRight, Brain, FileText, Target, Users, Zap, Lock, Upload, CheckCircle } from 'lucide-react' // ✅ added CheckCircle
+import { ArrowRight, Brain, FileText, Target, Users, Zap, Lock, CheckCircle } from 'lucide-react' // ✅ added CheckCircle
 
 export default function Home() {
   return (

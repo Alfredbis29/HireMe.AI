@@ -42,7 +42,7 @@ export const ErrorCodes = {
 /**
  * Creates a standardized API error response
  */
-export const createErrorResponse = (error: Error | AppError, request?: NextRequest): ApiError => {
+export const createErrorResponse = (error: Error | AppError): ApiError => {
   const timestamp = new Date().toISOString()
 
   if (error instanceof AppError) {
@@ -70,11 +70,8 @@ export const createErrorResponse = (error: Error | AppError, request?: NextReque
 /**
  * Sends a standardized error response
  */
-export const sendErrorResponse = (
-  error: Error | AppError,
-  request?: NextRequest
-): NextResponse => {
-  const apiError = createErrorResponse(error, request)
+export const sendErrorResponse = (error: Error | AppError): NextResponse => {
+  const apiError = createErrorResponse(error)
 
   return NextResponse.json(
     {
@@ -94,7 +91,7 @@ export const asyncHandler =
     try {
       return await fn(req)
     } catch (error) {
-      return sendErrorResponse(error instanceof Error ? error : new Error(String(error)), req)
+      return sendErrorResponse(error instanceof Error ? error : new Error(String(error)))
     }
   }
 

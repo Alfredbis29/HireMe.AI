@@ -2,7 +2,6 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
