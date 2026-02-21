@@ -5,23 +5,42 @@ The app is currently running in demo mode with mock data. No additional setup is
 
 ## Full Setup (With Real AI Analysis)
 
-To enable real AI-powered resume analysis, create a `.env.local` file in the project root with:
+To enable real AI-powered resume analysis, create a `.env.local` file in the project root with the following minimal environment variables:
 
 ```bash
-# OpenAI Configuration (Required for real AI analysis)
+# === REQUIRED VARIABLES ===
+
+# MongoDB Configuration (Required for user data persistence)
+MONGODB_URI=mongodb://localhost:27017/hireme_ai
+
+# NextAuth Configuration (Required for authentication)
+NEXTAUTH_SECRET=your-nextauth-secret-key-here
+NEXTAUTH_URL=http://localhost:3000
+
+# === OPTIONAL VARIABLES ===
+
+# OpenAI Configuration (Optional - enables AI resume analysis)
 OPENAI_API_KEY=your_actual_openai_api_key_here
 
-# NextAuth Configuration
-NEXTAUTH_SECRET=your-nextauth-secret-key-here
-NEXTAUTH_URL=http://localhost:3001
-
-# App Configuration
-NEXT_PUBLIC_APP_URL=http://localhost:3001
-
-# Google OAuth (Optional - for Google sign-in)
+# Google OAuth (Optional - enables Google sign-in)
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# LinkedIn Integration (Optional - for job search features)
+LINKEDIN_CLIENT_ID=your-linkedin-client-id
+LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret
 ```
+
+### Environment Variable Guide
+
+| Variable | Required | Purpose | Example |
+|----------|----------|---------|---------|
+| `MONGODB_URI` | ✅ | Database connection string | `mongodb://localhost:27017/hireme_ai` |
+| `NEXTAUTH_SECRET` | ✅ | Session encryption key | Generated via `openssl rand -base64 32` |
+| `NEXTAUTH_URL` | ✅ | Authentication callback URL | `http://localhost:3000` |
+| `OPENAI_API_KEY` | ❌ | AI analysis capability | From https://platform.openai.com |
+| `GOOGLE_CLIENT_ID` | ❌ | Google OAuth login | From Google Cloud Console |
+| `GOOGLE_CLIENT_SECRET` | ❌ | Google OAuth secret | From Google Cloud Console |
 
 ## How to Get OpenAI API Key
 

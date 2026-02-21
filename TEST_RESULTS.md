@@ -1,5 +1,22 @@
 # HireMe.AI - Complete Test Results
 
+## 📊 Test Tracking Conventions
+
+When recording test results, include the following information for reproducibility:
+
+```markdown
+## Test Run: [Test Name]
+- **Date**: YYYY-MM-DD
+- **Environment**: [local|staging|production]
+- **OS**: [Windows|macOS|Linux]
+- **Node Version**: [version]
+- **Tester**: [name or identifier]
+```
+
+This ensures test records are reproducible and easy to scan for specific configurations.
+
+---
+
 ## ✅ **All Systems Working Perfectly!**
 
 ### 🔍 **Test Results:**

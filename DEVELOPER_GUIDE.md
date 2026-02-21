@@ -14,6 +14,34 @@
 
 ---
 
+## 🌳 Git Workflow & Branch Strategy
+
+### Branch Naming Conventions
+- **Feature branches**: `feature/feature-name` for new features
+- **Bug fix branches**: `bugfix/issue-description` for fixes
+- **Documentation branches**: `docs/doc-topic` for doc updates
+- **Release branches**: `release/version-number` for releases
+
+### Working with Branches
+1. **Create a feature branch** from `main`:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+2. **Keep your branch updated** by regularly rebasing on `main`:
+   ```bash
+   git fetch origin
+   git rebase origin/main
+   ```
+3. **Push your changes** and create a Pull Request when ready:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+4. **After PR review**, merge to `main` using "Squash and merge" for cleaner history
+
+This approach reduces merge conflicts and keeps the main branch history clean and navigable.
+
+---
+
 ## Setup & Installation
 
 ### Prerequisites
