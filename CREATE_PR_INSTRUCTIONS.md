@@ -1,6 +1,42 @@
 # 🚀 How to Create Pull Request for HireMe.AI
 
-## 🔐 **Authentication Issue Resolution**
+## � **PR Title & Description Format**
+
+Use the following format for consistent PR titles and descriptions:
+
+### PR Title Format
+```
+<scope>: <short-description>
+```
+
+**Examples:**
+- `feat: add resume upload with drag-and-drop`
+- `fix: resolve authentication token expiration`
+- `docs: clarify environment setup process`
+- `refactor: optimize database query performance`
+- `test: add unit tests for validation service`
+
+### PR Description Template
+Include the following in your PR body:
+
+```markdown
+## Description
+Brief explanation of what this PR does
+
+## Testing Checklist
+- [ ] Tests added/updated
+- [ ] Docs updated  
+- [ ] Linting passed
+- [ ] Manual testing completed
+- [ ] No breaking changes introduced
+
+## Related Issues
+Closes #123
+```
+
+---
+
+## �🔐 **Authentication Issue Resolution**
 
 Since there's a Git authentication issue, here are your options to push and create a PR:
 
