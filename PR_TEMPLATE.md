@@ -3,6 +3,16 @@
 ## 📋 Summary
 Complete implementation of HireMe.AI - an AI-powered resume analysis platform with modern UI, comprehensive API, and production-ready deployment configuration.
 
+## ✅ Contribution Checklist
+- [ ] Code changes are working and tested
+- [ ] Unit tests have been added or updated
+- [ ] Documentation has been updated
+- [ ] Code follows project style guidelines
+- [ ] Linting checks pass (`npm run lint`)
+- [ ] No breaking changes introduced
+- [ ] Commit messages are clear and descriptive
+- [ ] PR description clearly explains changes
+
 ## 🎯 What's Included
 
 ### 🤖 **AI-Powered Features**
