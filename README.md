@@ -15,6 +15,18 @@
 
 ---
 
+## 🎯 Getting Started
+
+HireMe.AI helps job seekers optimize their resumes and find perfect career matches using AI-powered analysis. Whether you're a student, career changer, or experienced professional, our platform provides actionable insights to boost your hiring success.
+
+### Quick Start
+1. **Upload Your Resume** - Simply drag and drop your resume file
+2. **Get AI Analysis** - Receive comprehensive feedback on strengths and weaknesses
+3. **Find Jobs** - Get personalized job recommendations based on your profile
+4. **Apply Smarter** - Use insights to tailor your applications
+
+---
+
 ## ✨ Features
 
 ### 🔐 **Authentication System**
