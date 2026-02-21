@@ -14,7 +14,37 @@ http://localhost:3000/api
 
 ### POST /api/analyzeResume
 
-Analyzes a resume and returns comprehensive feedback.
+Analyzes a resume and returns comprehensive feedback including scoring, strengths, weaknesses, and job recommendations.
+
+#### Real-World Example: Entry-Level Developer
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/analyzeResume \
+  -H "Content-Type: application/json" \
+  -d '{
+    "resumeText": "Jane Smith\nJunior Web Developer\n\nEducation:\n- Bachelor of Science in Computer Science, State University (2023)\n\nSkills:\n- JavaScript, React, HTML/CSS, Node.js, SQL, Git\n\nExperience:\n- Web Development Bootcamp Project: E-commerce Platform (3 months)\n  - Built responsive React frontend for product catalog\n  - Implemented shopping cart with state management\n- Freelance Web Developer (3 months)\n  - Created 2 client websites using React and Tailwind CSS",
+    "jobTitle": "Junior Software Engineer",
+    "industry": "Technology"
+  }'
+```
+
+**Response:**
+```json
+{
+  "overallScore": 72,
+  "strengths": [
+    "Solid technical foundation with modern tech stack",
+    "Practical project experience demonstrated",
+    "Git and version control knowledge"
+  ],
+  "weaknesses": [
+    "Limited professional work experience",
+    "No mention of testing or CI/CD practices",
+    "Missing professional certifications or contributions"
+  ]
+}
+```
 
 #### Request Body
 
