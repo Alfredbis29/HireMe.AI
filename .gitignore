@@ -37,3 +37,9 @@ next-env.d.ts
 # user data
 /data
 node_modules
+
+# python virtual environment
+python-chat-server/venv/
+*.pyc
+__pycache__/
+.venv/
